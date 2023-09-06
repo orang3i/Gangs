@@ -1,0 +1,6 @@
+name: Gangs
+version: '${version}'
+main: com.orang3i.gangs.Gangs
+api-version: '1.20'
+commands:
+  tester:
