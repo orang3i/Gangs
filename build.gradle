@@ -15,7 +15,10 @@ plugins {
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 
-
+shadowJar {
+    File sus = new File("D:\\test server\\plugins")
+    destinationDirectory.set(sus)
+}
 group = 'com.orang3i'
 version = '1.0'
 

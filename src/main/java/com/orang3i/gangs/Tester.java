@@ -22,7 +22,7 @@ public class Tester implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         //Component comp1 = MiniMessage.miniMessage().deserialize( "<gradient:#9281fb:#eb93fc>Welcome Tester!</gradient>");
-        gangs.adventure().player((Player) sender).sendMessage(MiniMessage.miniMessage().deserialize( "<gradient:#9281fb:#eb93fc>Welcome Tester! get testing ;)</gradient>"));
+        gangs.adventure().player((Player) sender).sendMessage(MiniMessage.miniMessage().deserialize( "<gradient:#8e28ed:#f52c2c>Welcome Tester! get testing ;)</gradient>"));
 
 
         return true;
