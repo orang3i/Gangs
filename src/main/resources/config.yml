@@ -1,0 +1,10 @@
+database:
+    #sqlite or mysql
+    type: sqlite
+
+    #below options are only for mysql
+    host: localhost
+    port: 3306
+    db-name: gangs
+    user: root
+    password: ""
