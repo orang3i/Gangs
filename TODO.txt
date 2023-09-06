@@ -1,0 +1,3 @@
+1.create config
+2.ask for sql and mysql
+3.make way to store same vars
