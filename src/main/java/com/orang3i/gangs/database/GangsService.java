@@ -89,7 +89,7 @@ public class GangsService {
         playerStatsDao.deleteById(player.getUniqueId().toString());
     }
 
-    public Dao getDao(){
+    public final Dao<PlayerStats,String> getDao(){
         return playerStatsDao;
     }
 
