@@ -16,7 +16,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 
 shadowJar {
-    File sus = new File("D:\\test server\\plugins")
+    File sus = new File("D:\\test_server\\plugins")
     destinationDirectory.set(sus)
 }
 group = 'com.orang3i'
@@ -40,6 +40,7 @@ dependencies {
     compileOnly "org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT"
     implementation "net.kyori:adventure-platform-bukkit:4.3.0"
     implementation "net.kyori:adventure-text-minimessage:4.14.0"
+    implementation group: 'com.j256.ormlite', name: 'ormlite-jdbc', version: '6.1'
 }
 
 
