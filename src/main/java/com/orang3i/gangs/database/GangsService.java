@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.orang3i.gangs.Gangs;
 import com.orang3i.gangs.database.entities.PlayerStats;
 import org.bukkit.entity.Player;
 
@@ -15,8 +16,36 @@ public class GangsService {
     private final Dao<PlayerStats,String> playerStatsDao;
 
 
-    public GangsService(String path) throws SQLException {
-        ConnectionSource connectionSource = new JdbcConnectionSource("jdbc:sqlite:"+path);
+    public GangsService() throws SQLException {
+
+        Gangs gangs = Gangs.getPlugin();
+        String dbType = gangs.getConfig().getString("database.type");
+        ConnectionSource connectionSource = null;
+        String host = gangs.getConfig().getString("database.host");
+        String username = gangs.getConfig().getString("database.user");
+        String password = gangs.getConfig().getString("database.password");
+        String port = gangs.getConfig().getString("database.port");
+        String dbname = gangs.getConfig().getString("database.db-name");
+        if(dbType.equals("sqlite")){
+          connectionSource   = new JdbcConnectionSource("jdbc:sqlite:"+gangs.getDataFolder()+"/"+"\\gangs.db");
+        }
+        if(dbType.equals("mysql")){
+            //mysql://<username>:<password>@<host>:<port>/<db_name>
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+            }
+            catch (ClassNotFoundException e) {
+
+                e.printStackTrace();
+            }
+            String url = "jdbc:mysql://"+username+":"+password+"@"+host+":"+port+"/"+dbname;
+            System.out.println(url);
+
+            connectionSource   = new JdbcConnectionSource(url);
+
+
+        }
+
         TableUtils.createTableIfNotExists(connectionSource,PlayerStats.class);
         playerStatsDao = DaoManager.createDao(connectionSource,PlayerStats.class);
     }

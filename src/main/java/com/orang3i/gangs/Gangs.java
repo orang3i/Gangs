@@ -21,6 +21,9 @@ import static net.kyori.adventure.text.Component.text;
 public final class Gangs extends JavaPlugin {
     private BukkitAudiences adventure;
     private GangsService gangsService;
+
+    private static Gangs instance;
+
     public @NonNull BukkitAudiences adventure() {
         if(this.adventure == null) {
             throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
@@ -31,6 +34,7 @@ public final class Gangs extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        instance = this;
         File datafolder = new File(this.getDataFolder() + "/");
         File config = new File(getDataFolder(), "config.yml");
         if(!datafolder.exists()){
@@ -55,24 +59,24 @@ public final class Gangs extends JavaPlugin {
         getCommand("tester").setExecutor(new Tester(this));
         getCommand("setgang").setExecutor(new SetGang(this));
         getCommand("getgang").setExecutor(new GetGang(this));
-        String dbType = this.getConfig().getString("database.type");
-        System.out.println(dbType);
 
-        if(dbType.equals("sqlite")) {
             try {
                 System.out.println("me here yuh" + datafolder);
 
-                gangsService = new GangsService(datafolder + "\\gangs.db");
+                gangsService = new GangsService();
             } catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println("Cannot connect to database" + e.getMessage());
                 Bukkit.getPluginManager().disablePlugin(this);
             }
-        }
-        System.out.println("yessir");
+
     }
     public GangsService getService() {
         return gangsService;
+    }
+
+    public static Gangs getPlugin() {
+        return instance;
     }
     @Override
     public void onDisable() {

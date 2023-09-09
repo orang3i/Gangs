@@ -31,7 +31,14 @@ public class SetGang implements CommandExecutor {
         }
 
         try {
-            gangs.getService().setPlayerGang(player,args[0]);
+            StringBuilder concat_gang = new StringBuilder();
+
+            for(int i = 0;i<=args.length-1;i++){
+                concat_gang.append(args[i]+" ");
+            }
+            String gang_concacted = concat_gang.toString();
+            System.out.println(gang_concacted);
+            gangs.getService().setPlayerGang(player,gang_concacted);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
