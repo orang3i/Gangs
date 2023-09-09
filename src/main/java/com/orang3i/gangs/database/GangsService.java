@@ -43,6 +43,14 @@ public class GangsService {
         }
     }
 
+    public void setPlayerRank(Player player,String rank) throws SQLException{
+        PlayerStats playerStats = playerStatsDao.queryForId(player.getUniqueId().toString());
+        if(playerStats != null){
+            playerStats.setRank(rank);
+            playerStatsDao.update(playerStats);
+        }
+    }
+
     public PlayerStats getPlayerStats(Player player) throws SQLException {
 
         return playerStatsDao.queryForId(player.getUniqueId().toString());

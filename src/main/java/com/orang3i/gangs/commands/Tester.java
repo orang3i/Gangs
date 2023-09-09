@@ -29,27 +29,7 @@ public class Tester implements CommandExecutor {
         //Component comp1 = MiniMessage.miniMessage().deserialize( "<gradient:#9281fb:#eb93fc>Welcome Tester!</gradient>");
         gangs.adventure().player((Player) sender).sendMessage(MiniMessage.miniMessage().deserialize( "<gradient:#8e28ed:#f52c2c>Welcome Tester! get testing ;)</gradient>"));
 
-        try {
-            if(!gangs.getService().playerExists((Player) sender)){
-                System.out.println("player does not exist yet");
-                gangs.getService().addPlayer((Player) sender);
-                System.out.println("player hopefully exists now ");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
-        try {
-            gangs.getService().setPlayerGang((Player) sender,"Tokyo Manji");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            gangs.adventure().player((Player) sender).sendMessage(MiniMessage.miniMessage().deserialize( "<gradient:#8e28ed:#f52c2c>Welcome Tester! you belong to " + gangs.getService().getPlayerStats((Player) sender).getGang() +"</gradient>"));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
 
         return true;

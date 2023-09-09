@@ -1,5 +1,7 @@
 package com.orang3i.gangs;
 
+import com.orang3i.gangs.commands.GetGang;
+import com.orang3i.gangs.commands.SetGang;
 import com.orang3i.gangs.commands.Tester;
 import com.orang3i.gangs.database.GangsService;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -51,6 +53,8 @@ public final class Gangs extends JavaPlugin {
         }
         this.adventure = BukkitAudiences.create(this);
         getCommand("tester").setExecutor(new Tester(this));
+        getCommand("setgang").setExecutor(new SetGang(this));
+        getCommand("getgang").setExecutor(new GetGang(this));
         String dbType = this.getConfig().getString("database.type");
         System.out.println(dbType);
 

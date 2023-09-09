@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 
-public class SetGang implements CommandExecutor {
+public class GetGang implements CommandExecutor {
     private final Gangs gangs;
 
-    public SetGang(Gangs gangs){
+    public GetGang(Gangs gangs){
         this.gangs = gangs;
     }
     @Override
@@ -30,14 +30,9 @@ public class SetGang implements CommandExecutor {
             throw new RuntimeException(e);
         }
 
-        try {
-            gangs.getService().setPlayerGang(player,args[0]);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
         try {
-            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize( "<gradient:#8e28ed:#f52c2c>successfully set gang " + gangs.getService().getPlayerStats(player).getGang() +"</gradient>"));
+            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize( "<gradient:#8e28ed:#f52c2c>you belong to " + gangs.getService().getPlayerStats(player).getGang() +"</gradient>"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
