@@ -1,6 +1,7 @@
 package com.orang3i.gangs;
 
 import com.orang3i.gangs.commands.GetGang;
+import com.orang3i.gangs.commands.GetGangMembers;
 import com.orang3i.gangs.commands.SetGang;
 import com.orang3i.gangs.commands.Tester;
 import com.orang3i.gangs.database.GangsService;
@@ -59,6 +60,7 @@ public final class Gangs extends JavaPlugin {
         getCommand("tester").setExecutor(new Tester(this));
         getCommand("setgang").setExecutor(new SetGang(this));
         getCommand("getgang").setExecutor(new GetGang(this));
+        getCommand("getgangmembers").setExecutor(new GetGangMembers(this));
 
             try {
                 System.out.println("me here yuh" + datafolder);

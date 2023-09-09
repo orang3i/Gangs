@@ -89,5 +89,9 @@ public class GangsService {
         playerStatsDao.deleteById(player.getUniqueId().toString());
     }
 
+    public Dao getDao(){
+        return playerStatsDao;
+    }
+
 
 }

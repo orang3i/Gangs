@@ -6,3 +6,4 @@ commands:
   tester:
   setgang:
   getgang:
+  getgangmembers:
