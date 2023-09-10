@@ -69,7 +69,7 @@ public final class Gangs extends JavaPlugin {
 
 
         try {
-                System.out.println("me here yuh" + datafolder);
+                System.out.println("me here yuh yuh yo" + datafolder);
 
                 gangsService = new GangsService();
             } catch (SQLException e) {
