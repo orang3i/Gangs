@@ -29,14 +29,29 @@ public class GangsTabCompleter implements TabCompleter {
                 Player player = (Player) sender;
                 if(args.length<=1) {
                     list.add("invite");
+                    list.add("set-rank");
                 }
 
-                List<String> cmds = new ArrayList<>();
-                cmds.add("invite");
-                if(cmds.contains(args[0]) && args.length<=2){
+                List<String> cmds1i = new ArrayList<>();
+                cmds1i.add("invite");
+                if(cmds1i.contains(args[0]) && args.length<=2){
 
                    List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
                    onlinePlayers.forEach(l-> list.add(l.getDisplayName()));
+                }
+
+                List<String> cmds2i = new ArrayList<>();
+                cmds2i.add("set-rank");
+                if(cmds2i.contains(args[0]) && args.length==2){
+                    List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
+                    onlinePlayers.forEach(l-> list.add(l.getDisplayName()));
+
+                }
+                if(cmds2i.contains(args[0]) && args.length==3){
+
+
+                    List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks");
+                    ranks.forEach(l-> list.add(l));
                 }
 
 

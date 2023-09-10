@@ -11,4 +11,5 @@ database:
 
 gangs:
     ranks: [rookie,rookie1,rookie2,leader]
-    ranks-with-invite-perms: [rookie2,leader]
+    ranks-with-invite-perms: [rookie,rookie1,rookie2,leader]
+    ranks-with-rank-perms: [rookie,rookie1,rookie2,leader]

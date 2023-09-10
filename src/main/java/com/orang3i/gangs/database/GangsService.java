@@ -2,7 +2,9 @@ package com.orang3i.gangs.database;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.orang3i.gangs.Gangs;
@@ -10,6 +12,8 @@ import com.orang3i.gangs.database.entities.PlayerStats;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.UUID;
 
 public class GangsService {
 
@@ -66,6 +70,12 @@ public class GangsService {
 
     }
 
+    public boolean playerExists(UUID uuid) throws SQLException{
+        System.out.println("player exsits");
+        return playerStatsDao.idExists(uuid.toString());
+
+    }
+
     public void setPlayerGang(Player player,String gang) throws SQLException{
         PlayerStats playerStats = playerStatsDao.queryForId(player.getUniqueId().toString());
         if(playerStats != null){
@@ -73,7 +83,13 @@ public class GangsService {
             playerStatsDao.update(playerStats);
         }
     }
-
+    public void setPlayerGang(UUID uuid,String gang) throws SQLException{
+        PlayerStats playerStats = playerStatsDao.queryForId(uuid.toString());
+        if(playerStats != null){
+            playerStats.setGang(gang);
+            playerStatsDao.update(playerStats);
+        }
+    }
     public void setPlayerRank(Player player,String rank) throws SQLException{
         PlayerStats playerStats = playerStatsDao.queryForId(player.getUniqueId().toString());
         if(playerStats != null){
@@ -81,14 +97,44 @@ public class GangsService {
             playerStatsDao.update(playerStats);
         }
     }
-
+    public void setPlayerRank(UUID uuid,String rank) throws SQLException{
+        PlayerStats playerStats = playerStatsDao.queryForId(uuid.toString());
+        if(playerStats != null){
+            playerStats.setRank(rank);
+            playerStatsDao.update(playerStats);
+        }
+    }
     public PlayerStats getPlayerStats(Player player) throws SQLException {
 
         return playerStatsDao.queryForId(player.getUniqueId().toString());
     }
 
+    public PlayerStats getPlayerStats(UUID uuid) throws SQLException {
+
+        return playerStatsDao.queryForId(uuid.toString());
+    }
+
     public void deletePlayer(Player player) throws SQLException {
         playerStatsDao.deleteById(player.getUniqueId().toString());
+    }
+
+    public void deletePlayer(UUID uuid) throws SQLException {
+        playerStatsDao.deleteById(uuid.toString());
+    }
+
+    public UUID getPlayerUUID(String username) throws SQLException {
+        QueryBuilder<PlayerStats,String> qb = playerStatsDao.queryBuilder();
+        // select 2 aggregate functions as the return
+        qb.where().eq("username",username);
+        // the results will contain 2 string values for the min and max
+        GenericRawResults<String[]> rawResults = playerStatsDao.queryRaw(qb.prepareStatementString());
+        // page through the results
+        List<String[]> results = rawResults.getResults();
+        final UUID[] rankerUuidList = {null};
+        results.forEach(s -> rankerUuidList[0] =  UUID.fromString( s[0]));
+        UUID rankerUuid = rankerUuidList[0];
+
+        return rankerUuid;
     }
 
     public final Dao<PlayerStats,String> getDao(){
