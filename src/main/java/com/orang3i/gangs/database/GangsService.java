@@ -4,11 +4,13 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.stmt.PreparedUpdate;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.orang3i.gangs.Gangs;
 import com.orang3i.gangs.database.entities.PlayerStats;
+import com.orang3i.gangs.database.entities.ServerStats;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class GangsService {
 
     private final Dao<PlayerStats,String> playerStatsDao;
+    private final Dao<ServerStats,String> serverStatsDao;
 
 
     public GangsService() throws SQLException {
@@ -52,6 +55,9 @@ public class GangsService {
 
         TableUtils.createTableIfNotExists(connectionSource,PlayerStats.class);
         playerStatsDao = DaoManager.createDao(connectionSource,PlayerStats.class);
+        TableUtils.createTableIfNotExists(connectionSource, ServerStats.class);
+        serverStatsDao = DaoManager.createDao(connectionSource,ServerStats.class);
+
     }
 
 
@@ -63,6 +69,8 @@ public class GangsService {
         System.out.println("player added");
         return playerStats;
     }
+
+
 
     public boolean playerExists(Player player) throws SQLException{
         System.out.println("player exsits");
@@ -137,8 +145,17 @@ public class GangsService {
         return rankerUuid;
     }
 
-    public final Dao<PlayerStats,String> getDao(){
+    public final Dao<PlayerStats,String> getPlayerStatsDao(){
         return playerStatsDao;
+    }
+    public final Dao<ServerStats,String> getServerStatsDao(){
+        return serverStatsDao;
+    }
+    public void addGangs(String gang) throws SQLException {
+        System.out.println("added");
+        ServerStats serverStats = new ServerStats();
+        serverStats.setGangs(gang);
+        serverStatsDao.create(serverStats);
     }
 
 

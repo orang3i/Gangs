@@ -43,6 +43,8 @@ dependencies {
     implementation group: 'com.j256.ormlite', name: 'ormlite-jdbc', version: '6.1'
     implementation group: 'com.j256.ormlite', name: 'ormlite-core', version: '6.1'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'
+    implementation group: 'commons-collections', name: 'commons-collections', version: '3.2.2'
+
 }
 
 

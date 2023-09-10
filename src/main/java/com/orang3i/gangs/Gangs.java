@@ -2,9 +2,13 @@ package com.orang3i.gangs;
 
 import com.orang3i.gangs.commands.*;
 import com.orang3i.gangs.database.GangsService;
+import com.orang3i.gangs.listeners.JoinListener;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -61,8 +65,10 @@ public final class Gangs extends JavaPlugin {
         getCommand("gangs").setExecutor(new GangsCommands(this));
         getCommand("gangs").setTabCompleter(new GangsTabCompleter((this)));
         getCommand("adventurecommand").setExecutor(new AdventureCommand(this));
+        getServer().getPluginManager().registerEvents(new JoinListener(this), this);
 
-            try {
+
+        try {
                 System.out.println("me here yuh" + datafolder);
 
                 gangsService = new GangsService();
@@ -80,6 +86,8 @@ public final class Gangs extends JavaPlugin {
     public static Gangs getPlugin() {
         return instance;
     }
+
+
     @Override
     public void onDisable() {
         // Plugin shutdown logic

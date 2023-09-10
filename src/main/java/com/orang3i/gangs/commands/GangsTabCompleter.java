@@ -30,6 +30,7 @@ public class GangsTabCompleter implements TabCompleter {
                 if(args.length<=1) {
                     list.add("invite");
                     list.add("set-rank");
+                    list.add("create");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
