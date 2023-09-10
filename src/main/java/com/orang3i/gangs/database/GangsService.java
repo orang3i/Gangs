@@ -56,12 +56,14 @@ public class GangsService {
         playerStats.setUuid(player.getUniqueId().toString());
         playerStats.setUsername(player.getDisplayName());
         playerStatsDao.create(playerStats);
-
+        System.out.println("player added");
         return playerStats;
     }
 
     public boolean playerExists(Player player) throws SQLException{
+        System.out.println("player exsits");
         return playerStatsDao.idExists(player.getUniqueId().toString());
+
     }
 
     public void setPlayerGang(Player player,String gang) throws SQLException{

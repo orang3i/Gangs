@@ -48,9 +48,9 @@ public class GetGangMembers implements CommandExecutor {
 
             Dao<PlayerStats,String> dao= gangs.getService().getDao();
             QueryBuilder<PlayerStats,String> qb = dao.queryBuilder();
-// select 2 aggregate functions as the return
+            // select 2 aggregate functions as the return
             qb.where().eq("gang","tokyo manji");
-// the results will contain 2 string values for the min and max
+            // the results will contain 2 string values for the min and max
            GenericRawResults<String[]> rawResults = dao.queryRaw(qb.prepareStatementString());
             // page through the results
             List<String[]> results = rawResults.getResults();

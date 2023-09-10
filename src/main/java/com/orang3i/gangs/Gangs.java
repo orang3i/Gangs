@@ -1,9 +1,6 @@
 package com.orang3i.gangs;
 
-import com.orang3i.gangs.commands.GetGang;
-import com.orang3i.gangs.commands.GetGangMembers;
-import com.orang3i.gangs.commands.SetGang;
-import com.orang3i.gangs.commands.Tester;
+import com.orang3i.gangs.commands.*;
 import com.orang3i.gangs.database.GangsService;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.apache.commons.io.FileUtils;
@@ -61,6 +58,9 @@ public final class Gangs extends JavaPlugin {
         getCommand("setgang").setExecutor(new SetGang(this));
         getCommand("getgang").setExecutor(new GetGang(this));
         getCommand("getgangmembers").setExecutor(new GetGangMembers(this));
+        getCommand("gangs").setExecutor(new GangsCommands(this));
+        getCommand("gangs").setTabCompleter(new GangsTabCompleter((this)));
+        getCommand("adventurecommand").setExecutor(new AdventureCommand(this));
 
             try {
                 System.out.println("me here yuh" + datafolder);
