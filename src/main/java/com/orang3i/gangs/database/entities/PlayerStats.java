@@ -15,7 +15,7 @@ public class PlayerStats {
     @DatabaseField(canBeNull = false,defaultValue = "none")
     private String gang;
 
-    @DatabaseField(canBeNull = false,defaultValue = "rookie")
+    @DatabaseField(canBeNull = false,defaultValue = "none")
     private String rank;
 
     public PlayerStats(){
