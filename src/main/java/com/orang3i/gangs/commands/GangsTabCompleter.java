@@ -31,10 +31,13 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("invite");
                     list.add("set-rank");
                     list.add("create");
+                    list.add("leave");
+                    list.add("kick");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
                 cmds1i.add("invite");
+                cmds1i.add("kick");
                 if(cmds1i.contains(args[0]) && args.length<=2){
 
                    List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();

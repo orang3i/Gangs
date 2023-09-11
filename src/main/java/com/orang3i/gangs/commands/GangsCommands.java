@@ -112,7 +112,10 @@ public class GangsCommands implements CommandExecutor {
                         gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + args[1] + " is not part of your gang</gradient>"));
 
                     }
-            }
+            }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to set rank to poeple</gradient>"));
+
+                }
         } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -166,11 +169,76 @@ public class GangsCommands implements CommandExecutor {
                     gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>leave your current gang to create a new gang</gradient>"));
                 }
             } catch (SQLException e) {
+
                 throw new RuntimeException(e);
             }
         }
 
         //END OF CREATE SUBCOMMAND
+
+        //START OF LEAVE SUBCOMMAND
+        if(args[0].equals("leave") && args.length<=1) {
+
+            try {
+                if(!gangs.getService().getPlayerStats(player).getGang().equals("none")){
+                    String exgang =gangs.getService().getPlayerStats(player).getGang();
+                    gangs.getService().setPlayerGang(player,"none");
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are no longer a member of "+exgang+"</gradient>"));
+                }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are not part of any gang</gradient>"));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        //END OF LEAVE SUBCOMMAND
+
+        //START OF KICK SUBCOMMAND
+
+        if (args[0].equals("kick") && args.length == 2) {
+
+            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-kick-perms");
+            try {
+                if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+
+
+                    Player ranker = null;
+                    if (Bukkit.getPlayerExact(args[1]) != null) {
+
+                        ranker = Bukkit.getPlayer(args[1]);
+                    }
+
+                    if (gangs.getService().getPlayerUUID(args[1]) != null) {
+
+                        if (gangs.getService().getPlayerStats(gangs.getService().getPlayerUUID(args[1])).getGang().equals(gangs.getService().getPlayerStats(player).getGang())) {
+                            gangs.getService().setPlayerGang(gangs.getService().getPlayerUUID(args[1]), "none");
+                            if (ranker != null) {
+                                    gangs.adventure().player(ranker).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you were kicked from "+ gangs.getService().getPlayerStats(player).getGang()+" by "+ player.getName()+"</gradient>"));
+                            }
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + args[1] + " is now kicked from " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
+
+
+                        }else{
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + args[1] + " is not part of your gang</gradient>"));
+
+                        }
+                    }else{
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + args[1] + " is not part of your gang</gradient>"));
+
+                    }
+                }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to kick poeple</gradient>"));
+
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        //END OF KICK SUBCOMMAND
+
+
 
 //:)
         return true;
