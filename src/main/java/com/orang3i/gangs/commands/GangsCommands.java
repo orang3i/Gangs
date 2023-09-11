@@ -132,16 +132,10 @@ public class GangsCommands implements CommandExecutor {
                     String gang_concacted = concat_gang.toString();
                     Boolean gangExists = false;
                     try {
-                        QueryBuilder<ServerStats, String> qb = gangs.getService().getServerStatsDao().queryBuilder();
-                        // select 2 aggregate functions as the return
-                        qb.where().eq("gangs", gang_concacted.trim());
-                        // the results will contain 2 string values for the min and max
-                        GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
-                        // page through the results
 
-                        List<String[]> results = rawResults.getResults();
                         try {
-                            gangExists = results.get(0)[0].equals(gang_concacted.trim());
+                            System.out.println("gang exists");
+                            gangExists = gangs.getService().getRawResults("gangs",gang_concacted.trim()).get(0)[0].equals(gang_concacted.trim());
                         } catch (IndexOutOfBoundsException e) {
 
                         }

@@ -145,6 +145,20 @@ public class GangsService {
         return rankerUuid;
     }
 
+    public  List<String[]> getRawResults(String column,String query) throws SQLException {
+        Gangs gangs = Gangs.getPlugin();
+        QueryBuilder<ServerStats, String> qb = gangs.getService().getServerStatsDao().queryBuilder();
+        // select 2 aggregate functions as the return
+        qb.where().eq(column,query);
+        // the results will contain 2 string values for the min and max
+        GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
+        // page through the results
+
+        List<String[]> results = rawResults.getResults();
+
+        return results;
+    }
+
     public final Dao<PlayerStats,String> getPlayerStatsDao(){
         return playerStatsDao;
     }
