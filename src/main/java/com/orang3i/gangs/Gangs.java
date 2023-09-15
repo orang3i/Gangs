@@ -33,10 +33,7 @@ public final class Gangs extends JavaPlugin {
         return this.adventure;
     }
 
-    @Override
-    public void onEnable() {
-        // Plugin startup logic
-        instance = this;
+    public void createConfig(){
         File datafolder = new File(this.getDataFolder() + "/");
         File config = new File(getDataFolder(), "config.yml");
         if(!datafolder.exists()){
@@ -57,7 +54,15 @@ public final class Gangs extends JavaPlugin {
             }
 
         }
+    }
+    public void init(){
+        instance = this;
         this.adventure = BukkitAudiences.create(this);
+
+    }
+
+
+    public void registerCommands(){
         getCommand("tester").setExecutor(new Tester(this));
         getCommand("setgang").setExecutor(new SetGang(this));
         getCommand("getgang").setExecutor(new GetGang(this));
@@ -65,19 +70,34 @@ public final class Gangs extends JavaPlugin {
         getCommand("gangs").setExecutor(new GangsCommands(this));
         getCommand("gangs").setTabCompleter(new GangsTabCompleter((this)));
         getCommand("adventurecommand").setExecutor(new AdventureCommand(this));
+    }
+
+    public void registerEvents(){
         getServer().getPluginManager().registerEvents(new JoinListener(this), this);
 
+    }
 
+    public void connectToDatabase(){
         try {
-                System.out.println("me here yuh yuh yo" + datafolder);
+            gangsService = new GangsService();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Cannot connect to database" + e.getMessage());
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
+    }
 
-                gangsService = new GangsService();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("Cannot connect to database" + e.getMessage());
-                Bukkit.getPluginManager().disablePlugin(this);
-            }
-
+    public void testLogger(){
+        System.out.println("lmao");
+    }
+    @Override
+    public void onEnable() {
+        init();
+        createConfig();
+        registerCommands();
+        registerEvents();
+        connectToDatabase();
+        testLogger();
     }
     public GangsService getService() {
         return gangsService;
@@ -90,6 +110,6 @@ public final class Gangs extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+
     }
 }
