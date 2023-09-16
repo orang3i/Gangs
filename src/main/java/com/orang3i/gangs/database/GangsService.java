@@ -159,20 +159,6 @@ public class GangsService {
         return results;
     }
 
-    public  List<String[]> getRawPlayerResults(String column,String query) throws SQLException {
-        Gangs gangs = Gangs.getPlugin();
-        QueryBuilder<PlayerStats, String> qb = gangs.getService().getPlayerStatsDao().queryBuilder();
-        // select 2 aggregate functions as the return
-        qb.where().eq(column,query);
-        // the results will contain 2 string values for the min and max
-        GenericRawResults<String[]> rawResults = gangs.getService().getPlayerStatsDao().queryRaw(qb.prepareStatementString());
-        // page through the results
-
-        List<String[]> results = rawResults.getResults();
-
-        return results;
-    }
-
     public final Dao<PlayerStats,String> getPlayerStatsDao(){
         return playerStatsDao;
     }
@@ -184,11 +170,6 @@ public class GangsService {
         ServerStats serverStats = new ServerStats();
         serverStats.setGangs(gang);
         serverStatsDao.create(serverStats);
-    }
-
-    public void deleteGangs(String gang) throws SQLException {
-        System.out.println("deleted");
-        serverStatsDao.deleteById(gang);
     }
 
 
