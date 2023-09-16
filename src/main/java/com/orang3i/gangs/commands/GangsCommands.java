@@ -183,6 +183,7 @@ public class GangsCommands implements CommandExecutor {
                 if(!gangs.getService().getPlayerStats(player).getGang().equals("none")){
                     String exgang =gangs.getService().getPlayerStats(player).getGang();
                     gangs.getService().setPlayerGang(player,"none");
+                    gangs.getService().setPlayerRank(player,"none");
                     gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are no longer a member of "+exgang+"</gradient>"));
                 }else {
                     gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are not part of any gang</gradient>"));
@@ -213,6 +214,8 @@ public class GangsCommands implements CommandExecutor {
 
                         if (gangs.getService().getPlayerStats(gangs.getService().getPlayerUUID(args[1])).getGang().equals(gangs.getService().getPlayerStats(player).getGang())) {
                             gangs.getService().setPlayerGang(gangs.getService().getPlayerUUID(args[1]), "none");
+                            gangs.getService().setPlayerRank(gangs.getService().getPlayerUUID(args[1]), "none");
+
                             if (ranker != null) {
                                     gangs.adventure().player(ranker).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you were kicked from "+ gangs.getService().getPlayerStats(player).getGang()+" by "+ player.getName()+"</gradient>"));
                             }
@@ -238,6 +241,50 @@ public class GangsCommands implements CommandExecutor {
 
         //END OF KICK SUBCOMMAND
 
+        //START OF DISBAND SUBCOMMAND
+        if (args[0].equals("disband") && args.length <= 1) {
+
+            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-disband-perms");
+            try {
+                if(!gangs.getService().getPlayerStats(player).getGang().equals("none")) {
+                    if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+                        List<String[]> gang_members = gangs.getService().getRawPlayerResults("gang", gangs.getService().getPlayerStats(player).getGang());
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>"+gangs.getService().getPlayerStats(player).getGang()+" has been disbanded</gradient>"));
+                        gangs.getService().deleteGangs(gangs.getService().getPlayerStats(player).getGang());
+                        gangs.getService().setPlayerRank(player,"none");
+                        gangs.getService().setPlayerGang(player,"none");
+
+                        gang_members.forEach(strings -> {
+                            try {
+
+                                System.out.println(strings[0] + "here");
+                                if(!UUID.fromString(strings[0]).equals(gangs.getService().getPlayerUUID(player.getDisplayName()))){
+                                Player bander = null;
+                                if (Bukkit.getPlayerExact(Bukkit.getPlayer(UUID.fromString(strings[0])).getDisplayName()) != null) {
+                                    bander = Bukkit.getPlayer(UUID.fromString(strings[0]));
+                                    gangs.adventure().player(bander).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>"+gangs.getService().getPlayerStats(bander).getGang()+" has been disbanded</gradient>"));
+                                }
+
+                                gangs.getService().setPlayerRank(UUID.fromString(strings[0]),"none");
+                                gangs.getService().setPlayerGang(UUID.fromString(strings[0]),"none");
+                                }
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+
+                    } else {
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to disband your gang</gradient>"));
+
+                    }
+                }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are not part of any gang</gradient>"));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //END OF DISBAND SUBCOMMAND
 
 
 //:)
