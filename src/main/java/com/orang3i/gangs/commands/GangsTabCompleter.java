@@ -33,6 +33,7 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("create");
                     list.add("leave");
                     list.add("kick");
+                    list.add("disband");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
