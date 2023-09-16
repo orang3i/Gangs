@@ -9,7 +9,7 @@ database:
     user: root
     password: ""
 
-#gangs config
+
 gangs:
     ranks: [rookie,rookie1,rookie2,leader]
     ranks-with-invite-perms: [rookie,rookie1,rookie2,leader]

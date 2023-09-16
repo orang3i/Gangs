@@ -284,7 +284,7 @@ public class GangsCommands implements CommandExecutor {
                 throw new RuntimeException(e);
             }
         }
-        //END OF DISBAND SUBCOMMAND s
+        //END OF DISBAND SUBCOMMAND
 
 
 //:)
