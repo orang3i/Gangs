@@ -287,7 +287,7 @@ public class GangsCommands implements CommandExecutor {
         //END OF DISBAND SUBCOMMAND
 
 
-//:))
+//:)))
         return true;
     }
 }
