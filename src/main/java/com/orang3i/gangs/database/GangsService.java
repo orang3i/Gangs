@@ -186,12 +186,23 @@ public class GangsService {
         serverStatsDao.create(serverStats);
     }
 
+    public void setFriendlyFire(String gang,String friendlyFire) throws SQLException {
+        ServerStats serverStats = serverStatsDao.queryForId(gang);
+
+        serverStats.setFriendlyFire(friendlyFire);
+        serverStatsDao.update(serverStats);
+
+    }
+
     public void deleteGangs(String gang) throws SQLException {
         //delete a gang
         System.out.println("deleted");
         serverStatsDao.deleteById(gang);
     }
 
+    public ServerStats getServerStats(String gangs) throws SQLException {
 
+        return serverStatsDao.queryForId(gangs);
+    }
 
 }

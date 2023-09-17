@@ -286,6 +286,25 @@ public class GangsCommands implements CommandExecutor {
         }
         //END OF DISBAND SUBCOMMAND
 
+        //START OF FRIENDLY FIRE SUBCOMMAND
+        if (args[0].equals("friendlyfire") && args.length ==2) {
+
+            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-friendly-fire-perms");
+            try {
+                if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+
+                    gangs.getService().setFriendlyFire(gangs.getService().getPlayerStats(player).getGang(),args[1]);
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is now "+args[1]+"</gradient>"));
+
+                }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to set friendly fire</gradient>"));
+
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //END OF FRIENDLY FIRE SUBCOMMAND
 
 //:)))
         return true;

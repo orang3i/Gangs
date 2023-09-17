@@ -34,6 +34,7 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("leave");
                     list.add("kick");
                     list.add("disband");
+                    list.add("friendlyfire");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
@@ -57,6 +58,15 @@ public class GangsTabCompleter implements TabCompleter {
 
                     List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks");
                     ranks.forEach(l-> list.add(l));
+                }
+
+                List<String> cmds3i = new ArrayList<>();
+                cmds3i.add("friendlyfire");
+                if(cmds3i.contains(args[0]) && args.length==2){
+                    List<String> vals = new ArrayList<>();
+                    vals.add("true");
+                    vals.add("false");
+                    vals.forEach(l-> list.add(l));
                 }
 
 
