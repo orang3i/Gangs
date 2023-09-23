@@ -18,6 +18,9 @@ public class PlayerStats {
     @DatabaseField(canBeNull = false,defaultValue = "none")
     private String rank;
 
+    @DatabaseField(canBeNull = false,defaultValue = "false")
+    private String gangchat;
+
     public PlayerStats(){
         //req
     }
@@ -42,14 +45,20 @@ public class PlayerStats {
         return gang;
     }
 
-    public void setGang(String gang) {
-        this.gang = gang;
-    }
+    public void setGang(String gang) {this.gang = gang;}
     public String getRank() {
         return rank;
     }
 
     public void setRank(String rank) {
         this.rank = rank;
+    }
+
+    public String getGangchat() {
+        return gangchat;
+    }
+
+    public void setGangchat(String gangchat) {
+        this.gangchat = gangchat;
     }
 }

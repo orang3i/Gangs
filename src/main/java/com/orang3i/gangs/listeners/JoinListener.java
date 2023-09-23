@@ -15,7 +15,6 @@ public class JoinListener implements Listener {
     }
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws SQLException {
-
         try {
             if(!gangs.getService().playerExists(event.getPlayer())){
                 System.out.println("player does not exist yet");

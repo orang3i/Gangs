@@ -305,6 +305,27 @@ public class GangsCommands implements CommandExecutor {
             }
         }
         //END OF FRIENDLY FIRE SUBCOMMAND
+        //START OF TOGGLEGANGCHAT SUBCOMMAND
+        if (args[0].equals("gang-chat-toggle")) {
+            System.out.println("dsds");
+
+            try {
+                if(gangs.getService().getPlayerStats(player).getGangchat().equals("false")){
+                    gangs.getService().setPlayerGangChat(player,"true");
+                    System.out.println("was false");
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gang only chat enabled</gradient>"));
+                }else {
+                if(gangs.getService().getPlayerStats(player).getGangchat().equals("true")){
+                    gangs.getService().setPlayerGangChat(player,"false");
+                    System.out.println("was true");
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gang only chat disabled</gradient>"));
+                }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+            //END OF TOGGLEGANGCHAT SUBCOMMAND
 
 //:)))
         return true;

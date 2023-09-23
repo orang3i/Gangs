@@ -205,4 +205,12 @@ public class GangsService {
         return serverStatsDao.queryForId(gangs);
     }
 
+    public void setPlayerGangChat(Player player,String val) throws SQLException{
+        PlayerStats playerStats = playerStatsDao.queryForId(player.getUniqueId().toString());
+        if(playerStats != null){
+            playerStats.setGangchat(val);
+            playerStatsDao.update(playerStats);
+        }
+    }
+
 }

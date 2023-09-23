@@ -4,6 +4,7 @@ import com.orang3i.gangs.commands.*;
 import com.orang3i.gangs.database.GangsService;
 import com.orang3i.gangs.listeners.EntityDamageByEntityListener;
 import com.orang3i.gangs.listeners.JoinListener;
+import com.orang3i.gangs.listeners.PlayerChatListener;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
@@ -76,6 +77,7 @@ public final class Gangs extends JavaPlugin {
     public void registerEvents(){
         getServer().getPluginManager().registerEvents(new JoinListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityDamageByEntityListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerChatListener(this), this);
     }
 
     public void connectToDatabase(){
