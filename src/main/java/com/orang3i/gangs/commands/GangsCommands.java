@@ -1,17 +1,10 @@
 package com.orang3i.gangs.commands;
 
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.GenericRawResults;
-import com.j256.ormlite.stmt.QueryBuilder;
 import com.orang3i.gangs.Gangs;
 import com.orang3i.gangs.database.entities.PlayerStats;
-import com.orang3i.gangs.database.entities.ServerStats;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.util.Index;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,10 +13,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static net.kyori.adventure.text.event.ClickEvent.runCommand;
 
@@ -325,8 +317,58 @@ public class GangsCommands implements CommandExecutor {
                 throw new RuntimeException(e);
             }
         }
-            //END OF TOGGLEGANGCHAT SUBCOMMAND
+        //END OF TOGGLEGANGCHAT SUBCOMMAND
+        //START OF ALLY-REQUEST COMMAND
+        if (args[0].equals("ally-request") && args.length >= 2) {
 
+            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-ally-perms");
+            try {
+                if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+
+
+
+                    StringBuilder concat_gang = new StringBuilder();
+
+                    for(int i = 1;i<=(args.length-1);i++){
+                        concat_gang.append(args[i]+" ");
+                    }
+                    String gang_concacted = concat_gang.toString().trim();
+                    if(gangs.getService().getAllies(gangs.getService().getPlayerStats(player).getGang()).contains(gang_concacted)){
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are aleady allies with " +gang_concacted+ "</gradient>"));
+                    }else {
+                        AtomicInteger count = new AtomicInteger();
+                        Bukkit.getOnlinePlayers().forEach(p -> {
+                            try {
+
+                                if ((gangs.getService().getPlayerStats(p).getGang().equals(gang_concacted)) && ranks.contains(gangs.getService().getPlayerStats(p).getRank())) {
+                                    gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is invited to be an ally of " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
+
+                                    int lenganga = gang_concacted.length();
+                                    int lengangb = gangs.getService().getPlayerStats(player).getGang().length();
+                                    gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyinvite " + lenganga + " " + lengangb + " " + gang_concacted + " " + gangs.getService().getPlayerStats(player).getGang() + " " + player.getDisplayName() + " " + p.getDisplayName())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to join " + gangs.getService().getPlayerStats(player).getGang()))));
+                                    count.addAndGet(1);
+                                }
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                        if (count.get() >= 1) {
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>successfully invited " + gang_concacted + "</gradient>"));
+                        } else {
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>No current online players to accept invite</gradient>"));
+                        }
+                    }
+                } else {
+
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are not allowed to send ally invites on behalf of " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
+
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        //END OF ALLY-REQUEST COMMAND
 //:)))
         return true;
     }

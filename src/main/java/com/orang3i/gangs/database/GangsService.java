@@ -14,6 +14,8 @@ import com.orang3i.gangs.database.entities.ServerStats;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -204,7 +206,28 @@ public class GangsService {
 
         return serverStatsDao.queryForId(gangs);
     }
+    public void setAllies(String gang,String ally) throws SQLException {
+        ServerStats serverStats = serverStatsDao.queryForId(gang);
 
+
+        String alliesString = getServerStats(gang).getAllies().substring(1, getServerStats(gang).getAllies().length() - 1);
+        //split the string into an array
+        String[] strArray = alliesString.split(", ");
+        ArrayList<String> currentAllies = new  ArrayList<String>(Arrays.asList(strArray));
+        currentAllies.add(currentAllies.size(),ally);
+        alliesString = currentAllies.toString();
+        serverStats.setAllies(alliesString);
+        serverStatsDao.update(serverStats);
+
+    }
+    public ArrayList<String> getAllies(String gang) throws SQLException {
+        String alliesString = getServerStats(gang).getAllies().substring(1, getServerStats(gang).getAllies().length() - 1);
+        //split the string into an array
+        String[] strArray = alliesString.split(", ");
+        ArrayList<String> currentAllies = new  ArrayList<String>(Arrays.asList(strArray));
+
+        return currentAllies;
+    }
     public void setPlayerGangChat(Player player,String val) throws SQLException{
         PlayerStats playerStats = playerStatsDao.queryForId(player.getUniqueId().toString());
         if(playerStats != null){

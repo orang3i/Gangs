@@ -16,6 +16,7 @@ gangs:
     ranks-with-rank-perms: [rookie,rookie1,rookie2,leader]
     ranks-with-kick-perms: [rookie,rookie1,rookie2,leader]
     ranks-with-disband-perms: [rookie,rookie1,rookie2,leader]
+    ranks-with-ally-perms: [rookie,rookie1,rookie2,leader]
     force-friendly-fire: false
     force-friendly-fire-disable : false
     friendly-fire-gang: true
