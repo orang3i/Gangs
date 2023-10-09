@@ -56,24 +56,30 @@ public class AdventureCommand implements CommandExecutor {
                 System.out.println(Integer.valueOf(args[1]));
                 for(int i = 19;i<=(19+ Integer.valueOf(args[1]));i++){
                     concat_ganga = concat_ganga + (String.valueOf((str.charAt(i))));
-                    System.out.println(String.valueOf((str.charAt(i))) + " loop 1");
                 }
 
                 String concat_gangb = "";
 
                 for(int i = (19+ Integer.valueOf(args[1]))+1;i<=((19+ Integer.valueOf(args[1]))+1 + Integer.valueOf(args[2]));i++){
                     concat_gangb= concat_gangb + (String.valueOf((str.charAt(i))));
-                    System.out.println(String.valueOf((str.charAt(i))) + " loop 2 ");
                 }
                 System.out.println(concat_ganga.trim());
                 System.out.println(concat_gangb.trim());
+                if(gangs.getService().getAllies(concat_gangb.trim()).contains(concat_ganga.trim())){
 
-                gangs.getService().setAllies(concat_gangb.trim(),concat_ganga.trim());
-                gangs.getService().setAllies(concat_ganga.trim(),concat_gangb.trim());
-                gangs.adventure().player(Bukkit.getPlayer(args[args.length - 1])).sendMessage(MiniMessage.miniMessage().deserialize( "<gradient:#8e28ed:#f52c2c>your gang is now an ally of "+concat_gangb+"! </gradient>"));
-                if(Bukkit.getPlayerExact(args[args.length-2])!=null) {
-                    Player sent = Bukkit.getPlayer(args[args.length - 2]);
-                    gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize( "<gradient:#8e28ed:#f52c2c>your gang is now an ally of "+concat_ganga+"! </gradient>"));
+                    if (Bukkit.getPlayerExact(args[args.length - 1]) != null) {
+                        System.out.println(args[args.length - 1]);
+                        Player sent = Bukkit.getPlayer(gangs.getService().getPlayerUUID(args[args.length - 1]));
+                        gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are already allies with " + concat_ganga + "! </gradient>"));
+                    }
+                }else {
+                    gangs.getService().setAllies(concat_gangb.trim(), concat_ganga.trim());
+                    gangs.getService().setAllies(concat_ganga.trim(), concat_gangb.trim());
+                    gangs.adventure().player(Bukkit.getPlayer(args[args.length - 1])).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is now an ally of " + concat_gangb + "! </gradient>"));
+                    if (Bukkit.getPlayerExact(args[args.length - 2]) != null) {
+                        Player sent = Bukkit.getPlayer(args[args.length - 2]);
+                        gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is now an ally of " + concat_ganga + "! </gradient>"));
+                    }
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);

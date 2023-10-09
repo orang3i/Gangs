@@ -146,6 +146,7 @@ public class GangsCommands implements CommandExecutor {
                             gangs.getService().setPlayerGang(player, gang_concacted.trim());
                             List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks");
                             gangs.getService().setPlayerRank(player, ranks.get(ranks.size() - 1));
+                            gangs.getService().tempSolGangCreateAlly(gang_concacted.trim());
                             System.out.println(gangs.getService().getPlayerStats(player).getGang());
                             System.out.println(gangs.getService().getPlayerStats(player).getRank());
                             gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gang successfully created you are now the leader of " + gang_concacted.trim() + "</gradient>"));

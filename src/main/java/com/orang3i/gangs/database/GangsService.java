@@ -11,13 +11,13 @@ import com.j256.ormlite.table.TableUtils;
 import com.orang3i.gangs.Gangs;
 import com.orang3i.gangs.database.entities.PlayerStats;
 import com.orang3i.gangs.database.entities.ServerStats;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GangsService {
 
@@ -212,20 +212,36 @@ public class GangsService {
 
         String alliesString = getServerStats(gang).getAllies().substring(1, getServerStats(gang).getAllies().length() - 1);
         //split the string into an array
-        String[] strArray = alliesString.split(", ");
-        ArrayList<String> currentAllies = new  ArrayList<String>(Arrays.asList(strArray));
-        currentAllies.add(currentAllies.size(),ally);
-        alliesString = currentAllies.toString();
+        //List<String> currentAllies = new ArrayList<String>( Arrays.asList(alliesString.split("\\s*,\\s*")));
+        ArrayList<String> tmp= new ArrayList<String>( Arrays.asList(alliesString.split(",")));
+        alliesString="[";
+        int i;
+        for (i=0;i<tmp.size();i++){
+            String test = tmp.get(i).trim();
+            alliesString = alliesString+test+",";
+        }
+        alliesString = alliesString+ally+"]";
         serverStats.setAllies(alliesString);
         serverStatsDao.update(serverStats);
 
     }
+    public void tempSolGangCreateAlly(String gang) throws SQLException {
+        ServerStats serverStats = serverStatsDao.queryForId(gang);
+        String allies = "["+gang+",none]";
+        serverStats.setAllies(allies);
+        serverStatsDao.update(serverStats);
+    }
     public ArrayList<String> getAllies(String gang) throws SQLException {
         String alliesString = getServerStats(gang).getAllies().substring(1, getServerStats(gang).getAllies().length() - 1);
         //split the string into an array
-        String[] strArray = alliesString.split(", ");
-        ArrayList<String> currentAllies = new  ArrayList<String>(Arrays.asList(strArray));
-
+        ArrayList<String> tmp= new ArrayList<String>( Arrays.asList(alliesString.split(",")));
+        String[] str = new String[tmp.size()];
+        int i;
+        for (i=0;i<tmp.size();i++){
+            String test = tmp.get(i).trim();
+            str[i] = test;
+        }
+        ArrayList<String> currentAllies = new ArrayList<>(Arrays.asList(str));
         return currentAllies;
     }
     public void setPlayerGangChat(Player player,String val) throws SQLException{
