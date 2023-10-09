@@ -46,7 +46,6 @@ public class AdventureCommand implements CommandExecutor {
                 StringBuilder sb = new StringBuilder();
 
                 // Appends characters one by one
-
                 //sendallyinvite 9 7 tokyo sus sus men ORANG3I orang3ikr
                 //0123456789012345678
                 // convert in string
@@ -81,6 +80,71 @@ public class AdventureCommand implements CommandExecutor {
                         gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is now an ally of " + concat_ganga + "! </gradient>"));
                     }
                 }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if(args[0].equals("sendallyfriendlyinvite")){
+            try {
+                StringBuilder sb = new StringBuilder();
+
+                // Appends characters one by one
+
+                //sendallyinvite 9 7 tokyo sus sus men ORANG3I orang3ikr
+                //0123456789012345678
+                //sendallyfriendlyinvite 6 8 nycmen tokyomen ORANG3I orang3ikr
+                //012345678901234567890234567
+                // convert in string
+                String str = String.join(" ",args);
+                System.out.println(str);
+                String concat_ganga = "";
+                System.out.println(Integer.valueOf(args[1]));
+                for(int i = 27;i<=(27+ Integer.valueOf(args[1]));i++){
+                    concat_ganga = concat_ganga + (String.valueOf((str.charAt(i))));
+                }
+
+                String concat_gangb = "";
+
+                for(int i = (27+ Integer.valueOf(args[1]))+1;i<=((27+ Integer.valueOf(args[1]))+1 + Integer.valueOf(args[2]));i++){
+                    concat_gangb= concat_gangb + (String.valueOf((str.charAt(i))));
+                }
+                System.out.println(concat_ganga.trim());
+                System.out.println(concat_gangb.trim());
+                if(gangs.getService().getAllies(concat_gangb.trim()).contains(concat_ganga.trim())){
+                    System.out.println(args.length);
+                    System.out.println(args[args.length-1]);
+                    if(args[args.length-1].equals("true")){
+                        System.out.println("wee");
+                        gangs.getService().setFriendlyFireAllies(concat_ganga.trim(),concat_gangb.trim());
+                        gangs.getService().setFriendlyFireAllies(concat_gangb.trim(),concat_ganga.trim());
+                        if (Bukkit.getPlayerExact(args[args.length - 2]) != null) {
+                            System.out.println(args[args.length - 2]);
+                            Player sent = Bukkit.getPlayer(gangs.getService().getPlayerUUID(args[args.length - 2]));
+                            gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is off</gradient>"));
+                        }
+                        if (Bukkit.getPlayerExact(args[args.length - 3]) != null) {
+                            Player sent = Bukkit.getPlayer(args[args.length - 3]);
+                            gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is off</gradient>"));
+                        }
+                    }else {
+                        gangs.getService().removeAlliesFriendlyFire(concat_ganga.trim(),concat_gangb.trim());
+                        gangs.getService().removeAlliesFriendlyFire(concat_gangb.trim(),concat_ganga.trim());
+                        if (Bukkit.getPlayerExact(args[args.length - 2]) != null) {
+                            System.out.println(args[args.length - 2]);
+                            Player sent = Bukkit.getPlayer(gangs.getService().getPlayerUUID(args[args.length - 2]));
+                            gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is on</gradient>"));
+                        }
+                        if (Bukkit.getPlayerExact(args[args.length - 2]) != null) {
+                            Player sent = Bukkit.getPlayer(args[args.length - 2]);
+                            gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is on</gradient>"));
+                        }
+                    }
+                }else {
+                    if (Bukkit.getPlayerExact(args[args.length - 1]) != null) {
+                        System.out.println(args[args.length - 1]);
+                        Player sent = Bukkit.getPlayer(gangs.getService().getPlayerUUID(args[args.length - 1]));
+                        gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are not allies</gradient>"));
+                    }                }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

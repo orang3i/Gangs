@@ -195,7 +195,64 @@ public class GangsService {
         serverStatsDao.update(serverStats);
 
     }
+    public void setFriendlyFireAllies(String gang,String ally) throws SQLException {
+        ServerStats serverStats = serverStatsDao.queryForId(gang);
 
+
+        String alliesString = getServerStats(gang).getFriendlyFireAllies().substring(1, getServerStats(gang).getFriendlyFireAllies().length() - 1);
+        //split the string into an array
+        //List<String> currentAllies = new ArrayList<String>( Arrays.asList(alliesString.split("\\s*,\\s*")));
+        ArrayList<String> tmp= new ArrayList<String>( Arrays.asList(alliesString.split(",")));
+        alliesString="[";
+        int i;
+        for (i=0;i<tmp.size();i++){
+            String test = tmp.get(i).trim();
+            alliesString = alliesString+test+",";
+        }
+        alliesString = alliesString+ally+"]";
+        System.out.println(alliesString);
+        serverStats.setFriendlyFireAllies(alliesString);
+        serverStatsDao.update(serverStats);
+
+    }
+    public ArrayList<String> getAlliesFriendlyFire(String gang) throws SQLException {
+        String alliesString = getServerStats(gang).getFriendlyFireAllies().substring(1, getServerStats(gang).getFriendlyFireAllies().length() - 1);
+        //split the string into an array
+        ArrayList<String> tmp= new ArrayList<String>( Arrays.asList(alliesString.split(",")));
+        String[] str = new String[tmp.size()];
+        int i;
+        for (i=0;i<tmp.size();i++){
+            String test = tmp.get(i).trim();
+            str[i] = test;
+        }
+        ArrayList<String> currentAllies = new ArrayList<>(Arrays.asList(str));
+        return currentAllies;
+    }
+
+    public void removeAlliesFriendlyFire(String gang,String ally) throws SQLException {
+        ArrayList<String> listA = getAllies(gang);
+        listA.remove(ally);
+        ArrayList<String> listB = getAllies(ally);
+        listB.remove(gang);
+        String stringA = "[";
+        String stringB = "[";
+        int i;
+        for (i=0;i<listA.size()-1;i++){
+            stringA = stringA+listA.get(i).trim()+",";
+        }
+        stringA = stringA+listA.get(listA.size()-1)+"]";
+        for (i=0;i<listB.size()-1;i++){
+            stringB = stringB+listB.get(i).trim()+",";
+        }
+        stringB = stringB+listB.get(listB.size()-1)+"]";
+
+        ServerStats serverStatsA = serverStatsDao.queryForId(gang);
+        ServerStats serverStatsB = serverStatsDao.queryForId(ally);
+        serverStatsA.setFriendlyFireAllies(stringA);
+        serverStatsDao.update(serverStatsA);
+        serverStatsB.setFriendlyFireAllies(stringB);
+        serverStatsDao.update(serverStatsB);
+    }
     public void deleteGangs(String gang) throws SQLException {
         //delete a gang
         System.out.println("deleted");
@@ -231,6 +288,13 @@ public class GangsService {
         serverStats.setAllies(allies);
         serverStatsDao.update(serverStats);
     }
+
+    public void tempSolGangCreateAllyFriendlyFire(String gang) throws SQLException {
+        ServerStats serverStats = serverStatsDao.queryForId(gang);
+        String allies = "[none,none]";
+        serverStats.setFriendlyFireAllies(allies);
+        serverStatsDao.update(serverStats);
+    }
     public ArrayList<String> getAllies(String gang) throws SQLException {
         String alliesString = getServerStats(gang).getAllies().substring(1, getServerStats(gang).getAllies().length() - 1);
         //split the string into an array
@@ -244,6 +308,30 @@ public class GangsService {
         ArrayList<String> currentAllies = new ArrayList<>(Arrays.asList(str));
         return currentAllies;
     }
+    public void removeAllies(String gang,String ally) throws SQLException {
+        ArrayList<String> listA = getAllies(gang);
+        listA.remove(ally);
+        ArrayList<String> listB = getAllies(ally);
+        listB.remove(gang);
+        String stringA = "[";
+        String stringB = "[";
+        int i;
+        for (i=0;i<listA.size()-1;i++){
+        stringA = stringA+listA.get(i).trim()+",";
+        }
+        stringA = stringA+listA.get(listA.size()-1)+"]";
+        for (i=0;i<listB.size()-1;i++){
+            stringB = stringB+listB.get(i).trim()+",";
+        }
+        stringB = stringB+listB.get(listB.size()-1)+"]";
+
+        ServerStats serverStatsA = serverStatsDao.queryForId(gang);
+        ServerStats serverStatsB = serverStatsDao.queryForId(ally);
+        serverStatsA.setAllies(stringA);
+        serverStatsDao.update(serverStatsA);
+        serverStatsB.setAllies(stringB);
+        serverStatsDao.update(serverStatsB);
+    }
     public void setPlayerGangChat(Player player,String val) throws SQLException{
         PlayerStats playerStats = playerStatsDao.queryForId(player.getUniqueId().toString());
         if(playerStats != null){
@@ -251,5 +339,11 @@ public class GangsService {
             playerStatsDao.update(playerStats);
         }
     }
-
+    public void setPlayerAllyChat(Player player,String val) throws SQLException{
+        PlayerStats playerStats = playerStatsDao.queryForId(player.getUniqueId().toString());
+        if(playerStats != null){
+            playerStats.setAllychat(val);
+            playerStatsDao.update(playerStats);
+        }
+    }
 }

@@ -9,8 +9,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PlayerChatListener implements Listener {
     private final Gangs gangs;
@@ -30,6 +33,51 @@ public class PlayerChatListener implements Listener {
                 if (Bukkit.getPlayerExact(Bukkit.getPlayer(UUID.fromString(strings[0])).getDisplayName()) != null) {
 
                     ranker = Bukkit.getPlayer(Bukkit.getPlayer(UUID.fromString(strings[0])).getDisplayName());
+                }
+                if(ranker!= null) {
+                    //ranker.sendMessage(event.getMessage());
+                    try {
+                        gangs.adventure().player(ranker).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>["+gangs.getService().getPlayerStats(event.getPlayer()).getGang()+"] <"+event.getPlayer().getDisplayName()+"> "+event.getMessage()+"</gradient>"));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        }
+
+        if(gangs.getService().getPlayerStats(event.getPlayer()).getAllychat().equals("true")){
+            System.out.println("sdsdss");
+            event.setCancelled(true);
+            ArrayList<String> allies = gangs.getService().getAllies(gangs.getService().getPlayerStats(event.getPlayer().getUniqueId()).getGang());
+            AtomicReference<String> ally_members = new AtomicReference<>("");
+            allies.forEach(ally -> {
+                try {
+                    List<String[]> members = gangs.getService().getRawPlayerResults("gang", ally);
+                    members.forEach( member ->{
+                        ally_members.set(ally_members.get() + member[0] + ",");
+                    });
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            String allymems = ally_members.toString();
+            System.out.println(ally_members);
+            System.out.println(allymems);
+            //split the string into an array
+            ArrayList<String> tmp= new ArrayList<String>( Arrays.asList(allymems.split(",")));
+            String[] str = new String[tmp.size()];
+            int i;
+            for (i=0;i<tmp.size();i++){
+                String test = tmp.get(i).trim();
+                str[i] = test;
+            }
+            ArrayList<String> currentAllies = new ArrayList<>(Arrays.asList(str));
+            System.out.println(str[0]);
+            currentAllies.forEach(strings -> {
+                Player ranker = null;
+                if (Bukkit.getPlayerExact(Bukkit.getPlayer(UUID.fromString(strings)).getDisplayName()) != null) {
+
+                    ranker = Bukkit.getPlayer(Bukkit.getPlayer(UUID.fromString(strings)).getDisplayName());
                 }
                 if(ranker!= null) {
                     //ranker.sendMessage(event.getMessage());

@@ -17,6 +17,9 @@ public class ServerStats {
     private String friendlyFire;
 
     @DatabaseField(canBeNull = false,defaultValue = "[]")
+    private String friendlyFireAllies;
+
+    @DatabaseField(canBeNull = false,defaultValue = "[]")
     private String allies;
     public String getGangs() {
         return gangs;
@@ -32,6 +35,14 @@ public class ServerStats {
 
     public void setFriendlyFire(String friendlyFire) {
         this.friendlyFire = friendlyFire;
+    }
+
+    public String getFriendlyFireAllies() {
+        return friendlyFireAllies;
+    }
+
+    public void setFriendlyFireAllies(String friendlyFireAllies) {
+        this.friendlyFireAllies = friendlyFireAllies;
     }
 
     public String getAllies(){

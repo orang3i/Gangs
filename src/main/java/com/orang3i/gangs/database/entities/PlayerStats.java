@@ -21,6 +21,9 @@ public class PlayerStats {
     @DatabaseField(canBeNull = false,defaultValue = "false")
     private String gangchat;
 
+    @DatabaseField(canBeNull = false,defaultValue = "false")
+    private String allychat;
+
     public PlayerStats(){
         //req
     }
@@ -61,4 +64,12 @@ public class PlayerStats {
     public void setGangchat(String gangchat) {
         this.gangchat = gangchat;
     }
+    public void setAllychat(String allychat) {
+        this.allychat = allychat;
+    }
+
+    public String getAllychat() {
+        return allychat;
+    }
+
 }

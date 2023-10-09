@@ -20,6 +20,9 @@ gangs:
     force-friendly-fire: false
     force-friendly-fire-disable : false
     friendly-fire-gang: true
+    force-friendly-fire-disable-allies: false
+    friendly-fire-allies: true
+
     ranks-with-friendly-fire-perms: [rookie,rookie1,rookie2,leader]
 
 

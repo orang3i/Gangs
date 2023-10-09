@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -147,6 +148,7 @@ public class GangsCommands implements CommandExecutor {
                             List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks");
                             gangs.getService().setPlayerRank(player, ranks.get(ranks.size() - 1));
                             gangs.getService().tempSolGangCreateAlly(gang_concacted.trim());
+                            gangs.getService().tempSolGangCreateAllyFriendlyFire(gang_concacted.trim());
                             System.out.println(gangs.getService().getPlayerStats(player).getGang());
                             System.out.println(gangs.getService().getPlayerStats(player).getRank());
                             gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gang successfully created you are now the leader of " + gang_concacted.trim() + "</gradient>"));
@@ -243,6 +245,19 @@ public class GangsCommands implements CommandExecutor {
                     if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
                         List<String[]> gang_members = gangs.getService().getRawPlayerResults("gang", gangs.getService().getPlayerStats(player).getGang());
                         gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>"+gangs.getService().getPlayerStats(player).getGang()+" has been disbanded</gradient>"));
+                        ArrayList<String> allies = gangs.getService().getAllies(gangs.getService().getPlayerStats(player).getGang());
+                        allies.remove(gangs.getService().getPlayerStats(player).getGang());
+                        allies.remove("none");
+                        allies.forEach(ally->{
+                            try {
+                                if(!ally.equals(gangs.getService().getPlayerStats(player).getGang())) {
+                                    gangs.getService().removeAllies(ally,gangs.getService().getPlayerStats(player).getGang());
+                                }
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                        });
                         gangs.getService().deleteGangs(gangs.getService().getPlayerStats(player).getGang());
                         gangs.getService().setPlayerRank(player,"none");
                         gangs.getService().setPlayerGang(player,"none");
@@ -303,16 +318,20 @@ public class GangsCommands implements CommandExecutor {
             System.out.println("dsds");
 
             try {
-                if(gangs.getService().getPlayerStats(player).getGangchat().equals("false")){
-                    gangs.getService().setPlayerGangChat(player,"true");
-                    System.out.println("was false");
-                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gang only chat enabled</gradient>"));
+                if(!gangs.getService().getPlayerStats(player).getGang().equals("none")) {
+                    if (gangs.getService().getPlayerStats(player).getGangchat().equals("false")) {
+                        gangs.getService().setPlayerGangChat(player, "true");
+                        System.out.println("was false");
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gang only chat enabled</gradient>"));
+                    } else {
+                        if (gangs.getService().getPlayerStats(player).getGangchat().equals("true")) {
+                            gangs.getService().setPlayerGangChat(player, "false");
+                            System.out.println("was true");
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gang only chat disabled</gradient>"));
+                        }
+                    }
                 }else {
-                if(gangs.getService().getPlayerStats(player).getGangchat().equals("true")){
-                    gangs.getService().setPlayerGangChat(player,"false");
-                    System.out.println("was true");
-                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gang only chat disabled</gradient>"));
-                }
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are not a member of any gang</gradient>"));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -370,6 +389,135 @@ public class GangsCommands implements CommandExecutor {
 
         }
         //END OF ALLY-REQUEST COMMAND
+        //START OF ALLY-NEUTRAL COMMAND
+        if (args[0].equals("ally-neutral") && args.length >= 2) {
+
+            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-ally-perms");
+            try {
+                if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+
+
+
+                    StringBuilder concat_gang = new StringBuilder();
+
+                    for(int i = 1;i<=(args.length-1);i++){
+                        concat_gang.append(args[i]+" ");
+                    }
+                    String gang_concacted = concat_gang.toString().trim();
+                    if(gangs.getService().getAllies(gangs.getService().getPlayerStats(player).getGang()).contains(gang_concacted) && !gangs.getService().getPlayerStats(player).getGang().equals(gang_concacted) ){
+
+                        gangs.getService().removeAllies(gangs.getService().getPlayerStats(player).getGang(),gang_concacted);
+                        Bukkit.getOnlinePlayers().forEach(p -> {
+                            try {
+                                if ((gangs.getService().getPlayerStats(p).getGang().equals(gang_concacted))) {
+                                    gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is not allies anymore with "+gangs.getService().getPlayerStats(player).getGang()+"</gradient>"));
+                                }
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                        Bukkit.getOnlinePlayers().forEach(p -> {
+                            try {
+                                if (gangs.getService().getPlayerStats(p).getGang().equals(gangs.getService().getPlayerStats(player).getGang())) {
+                                    gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is not allies anymore with "+gang_concacted.trim()+"</gradient>"));
+                                }
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                    }else {
+
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are not allies with "+gang_concacted.trim()+"</gradient>"));
+                    }
+                } else {
+
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are not allowed to set allies as neutral on behalf of " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
+
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        //END OF ALLY-NEUTRAL COMMAND
+        //START OF TOGGLEALLYCHAT SUBCOMMAND
+        if (args[0].equals("ally-chat-toggle")) {
+            System.out.println("dsds");
+
+            try {if(gangs.getService().getAllies(gangs.getService().getPlayerStats(player).getGang()).size()>=2){
+                if (gangs.getService().getPlayerStats(player).getAllychat().equals("false")) {
+                    gangs.getService().setPlayerAllyChat(player, "true");
+                    System.out.println("was false");
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>ally only chat enabled</gradient>"));
+                } else {
+                    if (gangs.getService().getPlayerStats(player).getAllychat().equals("true")) {
+                        gangs.getService().setPlayerAllyChat(player, "false");
+                        System.out.println("was true");
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>ally only chat disabled</gradient>"));
+                    }
+                }
+            }else {
+                System.out.println("your gang has no allies");
+            }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //END OF TOGGLEALLYCHAT SUBCOMMAND
+        //START OF FRIENDLY FIRE ALLIES SUBCOMMAND
+        if (args[0].equals("friendlyfire-allies") && args.length ==3) {
+
+            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-friendly-fire-perms");
+            try {
+                if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+
+                    StringBuilder concat_gang = new StringBuilder();
+
+                    for(int i = 1;i<=(args.length-2);i++){
+                        concat_gang.append(args[i]+" ");
+                    }
+                    String gang_concacted = concat_gang.toString().trim();
+                    System.out.println(gang_concacted);
+                    AtomicInteger count = new AtomicInteger();
+                    Bukkit.getOnlinePlayers().forEach(p -> {
+                        try {
+
+                            if ((gangs.getService().getPlayerStats(p).getGang().equals(gang_concacted)) && ranks.contains(gangs.getService().getPlayerStats(p).getRank())) {
+                                System.out.println("hhh");
+                                if(args [2].equals( "true")){
+                                    gangs.adventure().player(p.getPlayer()).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is requested to turn off friendly fire with " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
+                                    int lenganga = gang_concacted.length();
+                                    int lengangb = gangs.getService().getPlayerStats(player).getGang().length();
+                                    gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyfriendlyinvite " + lenganga + " " + lengangb + " " + gang_concacted + " " + gangs.getService().getPlayerStats(player).getGang() + " " + player.getDisplayName() + " " + p.getDisplayName()+" true")).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to accept"))));
+                                    count.addAndGet(1);
+                                }else {
+                                    if(args [2].equals( "false")){
+                                        gangs.adventure().player(p.getPlayer()).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is requested to turn on friendly fire with " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
+                                        int lenganga = gang_concacted.length();
+                                        int lengangb = gangs.getService().getPlayerStats(player).getGang().length();
+                                        gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyfriendlyinvite " + lenganga + " " + lengangb + " " + gang_concacted + " " + gangs.getService().getPlayerStats(player).getGang() + " " + player.getDisplayName() + " " + p.getDisplayName()+" false")).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to accept"))));
+                                        count.addAndGet(1);
+                                    }
+                                }
+                            }
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                    if (count.get() >= 1) {
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>successfully invited " + gang_concacted + "</gradient>"));
+                    } else {
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>No current online players to accept invite</gradient>"));
+                    }
+                }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to set friendly fire</gradient>"));
+
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //END OF FRIENDLY FIRE ALLIES SUBCOMMAND
 //:)))
         return true;
     }
