@@ -203,6 +203,7 @@ public class GangsService {
         //split the string into an array
         //List<String> currentAllies = new ArrayList<String>( Arrays.asList(alliesString.split("\\s*,\\s*")));
         ArrayList<String> tmp= new ArrayList<String>( Arrays.asList(alliesString.split(",")));
+
         alliesString="[";
         int i;
         for (i=0;i<tmp.size();i++){

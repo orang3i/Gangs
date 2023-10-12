@@ -39,6 +39,7 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("ally-chat-toggle");
                     list.add("ally-request");
                     list.add("ally-neutral");
+                    list.add("friendlyfire-allies ");
                 }
 
                 List<String> cmds1i = new ArrayList<>();

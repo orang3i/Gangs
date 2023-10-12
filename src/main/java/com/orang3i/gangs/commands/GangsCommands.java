@@ -365,7 +365,7 @@ public class GangsCommands implements CommandExecutor {
 
                                     int lenganga = gang_concacted.length();
                                     int lengangb = gangs.getService().getPlayerStats(player).getGang().length();
-                                    gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyinvite " + lenganga + " " + lengangb + " " + gang_concacted + " " + gangs.getService().getPlayerStats(player).getGang() + " " + player.getDisplayName() + " " + p.getDisplayName())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to join " + gangs.getService().getPlayerStats(player).getGang()))));
+                                    gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyinvite $%A"+ gang_concacted + "$%A $%B" + gangs.getService().getPlayerStats(player).getGang() + "$%B " + player.getDisplayName() + " " + p.getDisplayName())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to join " + gangs.getService().getPlayerStats(player).getGang()))));
                                     count.addAndGet(1);
                                 }
                             } catch (SQLException e) {
@@ -465,8 +465,8 @@ public class GangsCommands implements CommandExecutor {
         }
         //END OF TOGGLEALLYCHAT SUBCOMMAND
         //START OF FRIENDLY FIRE ALLIES SUBCOMMAND
-        if (args[0].equals("friendlyfire-allies") && args.length ==3) {
-
+        if (args[0].equals("friendlyfire-allies") && args.length >=2) {
+            System.out.println("sds");
             List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-friendly-fire-perms");
             try {
                 if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
@@ -475,6 +475,7 @@ public class GangsCommands implements CommandExecutor {
 
                     for(int i = 1;i<=(args.length-2);i++){
                         concat_gang.append(args[i]+" ");
+                        System.out.println(args[i]);
                     }
                     String gang_concacted = concat_gang.toString().trim();
                     System.out.println(gang_concacted);
@@ -484,18 +485,20 @@ public class GangsCommands implements CommandExecutor {
 
                             if ((gangs.getService().getPlayerStats(p).getGang().equals(gang_concacted)) && ranks.contains(gangs.getService().getPlayerStats(p).getRank())) {
                                 System.out.println("hhh");
-                                if(args [2].equals( "true")){
+                                System.out.println(args[args.length-1]);
+                                if(args [args.length-1].equals("true")){
+                                    System.out.println("wjhwhe");
                                     gangs.adventure().player(p.getPlayer()).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is requested to turn off friendly fire with " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
                                     int lenganga = gang_concacted.length();
                                     int lengangb = gangs.getService().getPlayerStats(player).getGang().length();
-                                    gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyfriendlyinvite " + lenganga + " " + lengangb + " " + gang_concacted + " " + gangs.getService().getPlayerStats(player).getGang() + " " + player.getDisplayName() + " " + p.getDisplayName()+" true")).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to accept"))));
+                                    gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyfriendlyinvite $%A"+gang_concacted+"$%A $%B"+ gangs.getService().getPlayerStats(player).getGang() + "$%B " + player.getDisplayName() + " " + p.getDisplayName()+" true")).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to accept"))));
                                     count.addAndGet(1);
                                 }else {
-                                    if(args [2].equals( "false")){
+                                    if(args [args.length-1].equals( "false")){
                                         gangs.adventure().player(p.getPlayer()).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is requested to turn on friendly fire with " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
                                         int lenganga = gang_concacted.length();
                                         int lengangb = gangs.getService().getPlayerStats(player).getGang().length();
-                                        gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyfriendlyinvite " + lenganga + " " + lengangb + " " + gang_concacted + " " + gangs.getService().getPlayerStats(player).getGang() + " " + player.getDisplayName() + " " + p.getDisplayName()+" false")).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to accept"))));
+                                        gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyfriendlyinvite $%A"+gang_concacted+"$%A $%B"+ gangs.getService().getPlayerStats(player).getGang() + "$%B " + player.getDisplayName() + " " + p.getDisplayName()+" false")).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to accept"))));
                                         count.addAndGet(1);
                                     }
                                 }
