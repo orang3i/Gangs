@@ -108,11 +108,11 @@ public class AdventureCommand implements CommandExecutor {
                             if (Bukkit.getPlayerExact(args[args.length - 2]) != null) {
                                 System.out.println(args[args.length - 2]);
                                 Player sent = Bukkit.getPlayer(gangs.getService().getPlayerUUID(args[args.length - 2]));
-                                gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is off</gradient>"));
+                                gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is on</gradient>"));
                             }
                             if (Bukkit.getPlayerExact(args[args.length - 3]) != null) {
                                 Player sent = Bukkit.getPlayer(args[args.length - 3]);
-                                gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is off</gradient>"));
+                                gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is on</gradient>"));
                             }
                         }
                     }else {
@@ -121,11 +121,11 @@ public class AdventureCommand implements CommandExecutor {
                         if (Bukkit.getPlayerExact(args[args.length - 2]) != null) {
                             System.out.println(args[args.length - 2]);
                             Player sent = Bukkit.getPlayer(gangs.getService().getPlayerUUID(args[args.length - 2]));
-                            gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is on</gradient>"));
+                            gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is off</gradient>"));
                         }
-                        if (Bukkit.getPlayerExact(args[args.length - 2]) != null) {
-                            Player sent = Bukkit.getPlayer(args[args.length - 2]);
-                            gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is on</gradient>"));
+                        if (Bukkit.getPlayerExact(args[args.length - 3]) != null) {
+                            Player sent = Bukkit.getPlayer(args[args.length - 3]);
+                            gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is off</gradient>"));
                         }
                     }
                 }else {
