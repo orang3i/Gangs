@@ -114,6 +114,14 @@ public class GangsService {
             playerStatsDao.update(playerStats);
         }
     }
+
+public void setBalance(String gang,String balance)throws SQLException{
+        ServerStats serverStats = serverStatsDao.queryForId(gang);
+        serverStats.setBalance(balance);
+        serverStatsDao.update(serverStats);
+}
+
+
     public PlayerStats getPlayerStats(Player player) throws SQLException {
 
         return playerStatsDao.queryForId(player.getUniqueId().toString());

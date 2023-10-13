@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import java.lang.Math;
 import static net.kyori.adventure.text.event.ClickEvent.runCommand;
 
 public class GangsCommands implements CommandExecutor {
@@ -521,7 +521,77 @@ public class GangsCommands implements CommandExecutor {
             }
         }
         //END OF FRIENDLY FIRE ALLIES SUBCOMMAND
-//:)))
+
+        //START OF DEPOSIT SUBCOMMAND
+        if (args[0].equals("deposit") && args.length == 2) {
+
+            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-vault-perms");
+            try {
+                if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+
+                int amount = Math.abs(Math.round(Integer.valueOf(args[1])));
+                if(amount<=gangs.getEconomy().getBalance(player)){
+                    gangs.getEconomy().withdrawPlayer(player.getName(),amount);
+                    int newBalance = Integer.parseInt(gangs.getService().getServerStats(gangs.getService().getPlayerStats(player).getGang()).getBalance()) +amount;
+                    gangs.getService().setBalance(gangs.getService().getPlayerStats(player).getGang(),Integer.toString(newBalance));
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>deposited "+ amount+"$</gradient>"));
+                }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you cannot deposit more than your personal balance</gradient>"));
+                }
+                }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to deposit</gradient>"));
+
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //END OF DEPOSIT SUBCOMMAND
+
+        //START OF WITHDRAW SUBCOMMAND
+        if (args[0].equals("withdraw") && args.length == 2) {
+
+            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-vault-perms");
+            try {
+                if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+
+                    int amount = Math.abs(Math.round(Integer.valueOf(args[1])));
+                    if(amount<=Integer.valueOf(gangs.getService().getServerStats(gangs.getService().getPlayerStats(player).getGang()).getBalance())){
+                        gangs.getEconomy().depositPlayer(player.getName(),amount);
+                        int newBalance = Integer.parseInt(gangs.getService().getServerStats(gangs.getService().getPlayerStats(player).getGang()).getBalance()) - amount;
+                        gangs.getService().setBalance(gangs.getService().getPlayerStats(player).getGang(),Integer.toString(newBalance));
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>withdrawn "+ amount+"$</gradient>"));
+                    }else {
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you cannot withdraw more than your gang balance</gradient>"));
+                    }
+                }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to withdraw</gradient>"));
+
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (args[0].equals("balance") && args.length == 1) {
+
+            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-vault-perms");
+            try {
+                if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+
+
+                    int amount = Integer.parseInt(gangs.getService().getServerStats(gangs.getService().getPlayerStats(player).getGang()).getBalance());
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Balance: "+amount+"</gradient>"));
+                }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to see balance</gradient>"));
+
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //END OF WITHDRAW SUBCOMMAND
+
         return true;
     }
 }

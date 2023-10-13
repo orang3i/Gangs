@@ -40,6 +40,9 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("ally-request");
                     list.add("ally-neutral");
                     list.add("friendlyfire-allies ");
+                    list.add("deposit");
+                    list.add("withdraw");
+                    list.add("balance");
                 }
 
                 List<String> cmds1i = new ArrayList<>();

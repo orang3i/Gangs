@@ -21,6 +21,9 @@ public class ServerStats {
 
     @DatabaseField(canBeNull = false,defaultValue = "[]")
     private String allies;
+
+    @DatabaseField(canBeNull = false,defaultValue = "0")
+    private String balance;
     public String getGangs() {
         return gangs;
     }
@@ -48,11 +51,17 @@ public class ServerStats {
     public String getAllies(){
         return allies;
     }
-
     public void setAllies(String allies){
         this.allies = allies;
     }
 
+    public String getBalance(){
+        return balance;
+    }
+
+    public void setBalance(String balance){
+        this.balance = balance;
+    }
 
 
 }
