@@ -148,6 +148,7 @@ public class GangsCommands implements CommandExecutor {
                             List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks");
                             gangs.getService().setPlayerRank(player, ranks.get(ranks.size() - 1));
                             gangs.getService().tempSolGangCreateAlly(gang_concacted.trim());
+                            gangs.getService().tempSolGangCreateBase(gang_concacted.trim());
                             gangs.getService().tempSolGangCreateAllyFriendlyFire(gang_concacted.trim());
                             System.out.println(gangs.getService().getPlayerStats(player).getGang());
                             System.out.println(gangs.getService().getPlayerStats(player).getRank());
@@ -535,6 +536,7 @@ public class GangsCommands implements CommandExecutor {
                     int newBalance = Integer.parseInt(gangs.getService().getServerStats(gangs.getService().getPlayerStats(player).getGang()).getBalance()) +amount;
                     gangs.getService().setBalance(gangs.getService().getPlayerStats(player).getGang(),Integer.toString(newBalance));
                     gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>deposited "+ amount+"$</gradient>"));
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance "+ (gangs.getService().getServerStats(gangs.getService().getPlayerStats(player).getGang()).getBalance()) +"$</gradient>"));
                 }else {
                     gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you cannot deposit more than your personal balance</gradient>"));
                 }
@@ -561,6 +563,7 @@ public class GangsCommands implements CommandExecutor {
                         int newBalance = Integer.parseInt(gangs.getService().getServerStats(gangs.getService().getPlayerStats(player).getGang()).getBalance()) - amount;
                         gangs.getService().setBalance(gangs.getService().getPlayerStats(player).getGang(),Integer.toString(newBalance));
                         gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>withdrawn "+ amount+"$</gradient>"));
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance "+ (gangs.getService().getServerStats(gangs.getService().getPlayerStats(player).getGang()).getBalance()) +"$</gradient>"));
                     }else {
                         gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you cannot withdraw more than your gang balance</gradient>"));
                     }

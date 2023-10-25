@@ -22,6 +22,12 @@ public class ServerStats {
     @DatabaseField(canBeNull = false,defaultValue = "[]")
     private String allies;
 
+    @DatabaseField(canBeNull = false,defaultValue = "[]")
+    private String baseCoords;
+
+    @DatabaseField(canBeNull = false,defaultValue = "[]")
+    private String baseName;
+
     @DatabaseField(canBeNull = false,defaultValue = "0")
     private String balance;
     public String getGangs() {
@@ -30,6 +36,22 @@ public class ServerStats {
 
     public void setGangs(String gangs) {
         this.gangs = gangs;
+    }
+
+    public String getBaseCoords(){
+        return  baseCoords;
+    }
+
+    public void setBaseCoords(String baseCoords){
+        this.baseCoords = baseCoords;
+    }
+
+    public String getBaseName(){
+        return  baseName;
+    }
+
+    public void setBaseName(String baseName){
+        this.baseName = baseName;
     }
 
     public String getFriendlyFire() {

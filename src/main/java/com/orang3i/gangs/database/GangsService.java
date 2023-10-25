@@ -11,6 +11,7 @@ import com.j256.ormlite.table.TableUtils;
 import com.orang3i.gangs.Gangs;
 import com.orang3i.gangs.database.entities.PlayerStats;
 import com.orang3i.gangs.database.entities.ServerStats;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
@@ -130,6 +131,7 @@ public void setBalance(String gang,String balance)throws SQLException{
     public PlayerStats getPlayerStats(UUID uuid) throws SQLException {
 
         return playerStatsDao.queryForId(uuid.toString());
+
     }
 
     public void deletePlayer(Player player) throws SQLException {
@@ -304,6 +306,15 @@ public void setBalance(String gang,String balance)throws SQLException{
         serverStats.setFriendlyFireAllies(allies);
         serverStatsDao.update(serverStats);
     }
+
+    public void tempSolGangCreateBase(String gang) throws SQLException {
+        ServerStats serverStats = serverStatsDao.queryForId(gang);
+        String baseName = "[none,none]";
+        String baseCoords = "[none,none]";
+        serverStats.setBaseCoords(baseCoords);
+        serverStats.setBaseName(baseName);
+        serverStatsDao.update(serverStats);
+    }
     public ArrayList<String> getAllies(String gang) throws SQLException {
         String alliesString = getServerStats(gang).getAllies().substring(1, getServerStats(gang).getAllies().length() - 1);
         //split the string into an array
@@ -316,6 +327,105 @@ public void setBalance(String gang,String balance)throws SQLException{
         }
         ArrayList<String> currentAllies = new ArrayList<>(Arrays.asList(str));
         return currentAllies;
+    }
+    public ArrayList<String> getBases(String gang) throws SQLException {
+        String baseString = getServerStats(gang).getBaseName().substring(1, getServerStats(gang).getBaseName().length() - 1);
+        //split the string into an array
+        ArrayList<String> tmp= new ArrayList<String>( Arrays.asList(baseString.split(",")));
+        String[] str = new String[tmp.size()];
+        int i;
+        for (i=0;i<tmp.size();i++){
+            String test = tmp.get(i).trim();
+            str[i] = test;
+        }
+        ArrayList<String> currentBase = new ArrayList<>(Arrays.asList(str));
+        return currentBase;
+    }
+
+    public ArrayList<String> getBasesCoordsList(String gang) throws SQLException {
+        String baseString = getServerStats(gang).getBaseCoords().substring(1, getServerStats(gang).getBaseCoords().length() - 1);
+        //split the string into an array
+        ArrayList<String> tmp= new ArrayList<String>( Arrays.asList(baseString.split(",")));
+        String[] str = new String[tmp.size()];
+        int i;
+        for (i=0;i<tmp.size();i++){
+            String test = tmp.get(i).trim();
+            str[i] = test;
+        }
+        ArrayList<String> currentBase = new ArrayList<>(Arrays.asList(str));
+        return currentBase;
+    }
+
+    public String getBaseCoords(String gang,String base) throws SQLException {
+
+        int coordsIndex = getBases(gang).indexOf(base);
+        System.out.println(coordsIndex);
+        String coords = getBasesCoordsList(gang).get(coordsIndex);
+        System.out.println(coords);
+        return coords;
+    }
+    public void setBases(String gang,String base,String x , String y , String z) throws SQLException {
+        ServerStats serverStats = serverStatsDao.queryForId(gang);
+
+        String baseString = getServerStats(gang).getBaseName().substring(1, getServerStats(gang).getBaseName().length() - 1);
+
+        //split the string into an array
+        //List<String> currentAllies = new ArrayList<String>( Arrays.asList(alliesString.split("\\s*,\\s*")));
+        ArrayList<String> tmp= new ArrayList<String>( Arrays.asList(baseString.split(",")));
+        baseString="[";
+        int i;
+        for (i=0;i<tmp.size();i++){
+            String test = tmp.get(i).trim();
+            baseString = baseString+test+",";
+        }
+        baseString = baseString+base+"]";
+        System.out.println(baseString);
+        String coords = x+" "+y+" "+z;
+        System.out.println(coords);
+        String baseCoordsString = getServerStats(gang).getBaseCoords().substring(1, getServerStats(gang).getBaseCoords().length() - 1);
+        ArrayList<String> tmm= new ArrayList<String>( Arrays.asList(baseCoordsString.split(",")));
+        baseCoordsString="[";
+        int j;
+        for (j=0;j<tmm.size();j++){
+            String test = tmm.get(j).trim();
+            System.out.println(j);
+            baseCoordsString = baseCoordsString+test+",";
+        }
+        baseCoordsString = baseCoordsString+coords+"]";
+
+        serverStats.setBaseName(baseString);
+        serverStats.setBaseCoords(baseCoordsString);
+        serverStatsDao.update(serverStats);
+
+    }
+
+    public void removeBases(String gang,String base) throws SQLException {
+        ArrayList<String> BasesCoords = getBasesCoordsList(gang);
+        BasesCoords.remove(getBaseCoords(gang,base));
+        String  BaseCoordsStr = "[";
+
+        int j;
+        for (j=0;j<BasesCoords.size()-1;j++){
+            BaseCoordsStr = BaseCoordsStr+BasesCoords.get(j).trim()+",";
+        }
+        BaseCoordsStr = BaseCoordsStr+BasesCoords.get(BasesCoords.size()-1)+"]";
+
+
+
+        ArrayList<String> Bases = getBases(gang);
+        Bases.remove(base);
+        String  BaseStr = "[";
+
+        int i;
+        for (i=0;i<Bases.size()-1;i++){
+            BaseStr = BaseStr+Bases.get(i).trim()+",";
+        }
+        BaseStr = BaseStr+Bases.get(Bases.size()-1)+"]";
+
+        ServerStats serverStats = serverStatsDao.queryForId(gang);
+        serverStats.setBaseName(BaseStr);
+        serverStats.setBaseCoords(BaseCoordsStr);
+        serverStatsDao.update(serverStats);
     }
     public void removeAllies(String gang,String ally) throws SQLException {
         ArrayList<String> listA = getAllies(gang);
