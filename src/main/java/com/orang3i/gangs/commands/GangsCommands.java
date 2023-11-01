@@ -595,6 +595,47 @@ public class GangsCommands implements CommandExecutor {
         }
         //END OF WITHDRAW SUBCOMMAND
 
+        //START OF SET-BASE
+        if (args[0].equals("set-base") && args.length == 2) {
+
+            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-base-perms");
+            try {
+                if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+                    if(!gangs.getService().getBases(gangs.getService().getPlayerStats(player).getGang()).contains(args[1])){
+                        gangs.getService().setBases(gangs.getService().getPlayerStats(player).getGang(),args[1],String.valueOf(player.getLocation().getX()),String.valueOf(player.getLocation().getY()),String.valueOf(player.getLocation().getZ()));
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>successfully set base</gradient>"));
+                    }else {
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>There is already a base with that name</gradient>"));
+                    }
+                }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to set base</gradient>"));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //END OF SET-BASE
+
+        //START OF REMOVE BASE
+        if (args[0].equals("remove-base") && args.length == 2) {
+
+            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-base-perms");
+            try {
+                if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+                    if(gangs.getService().getBases(gangs.getService().getPlayerStats(player).getGang()).contains(args[1])){
+                        gangs.getService().removeBases(gangs.getService().getPlayerStats(player).getGang(),args[1]);
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>successfully removed base</gradient>"));
+                    }else {
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>There is no base with that name</gradient>"));
+                    }
+                }else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to remove base</gradient>"));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //END OF REMOVE BASE
         return true;
     }
 }

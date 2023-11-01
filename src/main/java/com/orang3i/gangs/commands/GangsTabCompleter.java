@@ -43,6 +43,8 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("deposit");
                     list.add("withdraw");
                     list.add("balance");
+                    list.add("set-base");
+                    list.add("remove-base");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
