@@ -25,6 +25,7 @@ gangs:
     friendly-fire-gang: true
     force-friendly-fire-disable-allies: false
     friendly-fire-allies: true
+    base-tp-cooldown: 60 #seconds
 
 
 

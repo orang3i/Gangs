@@ -3,17 +3,23 @@ package com.orang3i.gangs.commands;
 import com.j256.ormlite.dao.Dao;
 import com.orang3i.gangs.Gangs;
 import com.orang3i.gangs.database.entities.PlayerStats;
+import com.orang3i.gangs.listeners.PlayerMoveEventListener;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,6 +32,8 @@ public class GangsCommands implements CommandExecutor {
     public GangsCommands(Gangs gangs){
         this.gangs = gangs;
     }
+
+    public static HashMap<String, Long> tpCooldowns = new HashMap<String, Long>();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
@@ -602,7 +610,7 @@ public class GangsCommands implements CommandExecutor {
             try {
                 if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
                     if(!gangs.getService().getBases(gangs.getService().getPlayerStats(player).getGang()).contains(args[1])){
-                        gangs.getService().setBases(gangs.getService().getPlayerStats(player).getGang(),args[1],String.valueOf(player.getLocation().getX()),String.valueOf(player.getLocation().getY()),String.valueOf(player.getLocation().getZ()));
+                        gangs.getService().setBases(gangs.getService().getPlayerStats(player).getGang(),args[1],player.getWorld().getName(),String.valueOf(player.getLocation().getX()),String.valueOf(player.getLocation().getY()),String.valueOf(player.getLocation().getZ()));
                         gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>successfully set base</gradient>"));
                     }else {
                         gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>There is already a base with that name</gradient>"));
@@ -636,6 +644,60 @@ public class GangsCommands implements CommandExecutor {
             }
         }
         //END OF REMOVE BASE
+
+        //START OF TP BASE
+        if (args[0].equals("tp-base") && args.length == 2) {
+
+            try {
+
+                    if(gangs.getService().getBases(gangs.getService().getPlayerStats(player).getGang()).contains(args[1])) {
+
+                        long cooldownTime = gangs.getConfig().getLong("gangs.base-tp-cooldown"); // Get number of seconds from wherever you want
+                        if (!tpCooldowns.containsKey(sender.getName())) {
+                                tpCooldowns.put(sender.getName(), System.currentTimeMillis());
+
+                        }
+                            long secondsLeft = ((tpCooldowns.get(sender.getName()) / 1000) + cooldownTime) - (System.currentTimeMillis() / 1000);
+                            if (secondsLeft > 0) {
+                                // Still cooling down
+
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>please wait " + secondsLeft + " seconds before using that command</gradient>"));
+                            } else {
+
+                                // No cooldown found or cooldown has expired, save new cooldown
+                                tpCooldowns.put(sender.getName(), System.currentTimeMillis());
+                                String coords = gangs.getService().getBaseCoords(gangs.getService().getPlayerStats(player).getGang(), args[1]);
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>telporting in 5 seconds, don't move</gradient>"));
+                                String worldName = StringUtils.substringBetween(coords, "$W", "$W");
+                                Double locX = Double.valueOf(StringUtils.substringBetween(coords, "$X", "$X"));
+                                Double locY = Double.valueOf(StringUtils.substringBetween(coords, "$Y", "$Y"));
+                                Double locZ = Double.valueOf(StringUtils.substringBetween(coords, "$Z", "$Z"));
+                                World locWorld = Bukkit.getWorld(worldName);
+
+                                PlayerMoveEventListener.appendTeleport(player);
+                                gangs.getServer().getScheduler().scheduleSyncDelayedTask(gangs, new Runnable() {
+                                    public void run() {
+                                        if (PlayerMoveEventListener.teleport.contains(player)) {
+                                            System.out.println("WAited");
+                                            Location loc = new Location(locWorld, locX, locY, locZ);
+                                            player.teleport(loc);
+                                            PlayerMoveEventListener.popTeleport(player);
+                                        }
+
+                                    }
+                                }, 20 * 5); // 20 (one second in ticks) * 5 (seconds to wait)
+                            }
+
+
+                    }else {
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>There is no base with that name</gradient>"));
+                    }
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        //END OF TP BASE
         return true;
     }
 }

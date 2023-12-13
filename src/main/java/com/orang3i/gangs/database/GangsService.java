@@ -364,7 +364,7 @@ public void setBalance(String gang,String balance)throws SQLException{
         System.out.println(coords);
         return coords;
     }
-    public void setBases(String gang,String base,String x , String y , String z) throws SQLException {
+    public void setBases(String gang,String base,String world,String x , String y , String z) throws SQLException {
         ServerStats serverStats = serverStatsDao.queryForId(gang);
 
         String baseString = getServerStats(gang).getBaseName().substring(1, getServerStats(gang).getBaseName().length() - 1);
@@ -380,7 +380,7 @@ public void setBalance(String gang,String balance)throws SQLException{
         }
         baseString = baseString+base+"]";
         System.out.println(baseString);
-        String coords = x+" "+y+" "+z;
+        String coords = "$W"+world+"$W $X"+x+"$X $Y"+y+"$Y $Z"+z+"$Z";
         System.out.println(coords);
         String baseCoordsString = getServerStats(gang).getBaseCoords().substring(1, getServerStats(gang).getBaseCoords().length() - 1);
         ArrayList<String> tmm= new ArrayList<String>( Arrays.asList(baseCoordsString.split(",")));

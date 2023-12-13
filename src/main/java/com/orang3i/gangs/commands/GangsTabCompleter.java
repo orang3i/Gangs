@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("balance");
                     list.add("set-base");
                     list.add("remove-base");
+                    list.add("tp-base");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
@@ -79,7 +81,25 @@ public class GangsTabCompleter implements TabCompleter {
                     vals.forEach(l-> list.add(l));
                 }
 
+                List<String> cmds4i = new ArrayList<>();
+                cmds4i.add("remove-base");
+                cmds4i.add("tp-base");
+                if(cmds4i.contains(args[0]) && args.length==2){
+                   ArrayList<String> bases = null;
+                    try {
+                        bases = gangs.getService().getBases(gangs.getService().getPlayerStats(player).getGang());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
 
+                    bases.forEach(l-> {
+                        if(!l.equals("none")) {
+                            list.add(l);
+                        }
+
+                    });
+
+                }
             }
         }
 
