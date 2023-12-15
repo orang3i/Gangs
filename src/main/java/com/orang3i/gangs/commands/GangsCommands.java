@@ -1,8 +1,11 @@
 package com.orang3i.gangs.commands;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.GenericRawResults;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.orang3i.gangs.Gangs;
 import com.orang3i.gangs.database.entities.PlayerStats;
+import com.orang3i.gangs.database.entities.ServerStats;
 import com.orang3i.gangs.listeners.PlayerMoveEventListener;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -17,12 +20,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.lang.Math;
+
 import static net.kyori.adventure.text.event.ClickEvent.runCommand;
 
 public class GangsCommands implements CommandExecutor {
@@ -882,6 +883,94 @@ public class GangsCommands implements CommandExecutor {
                 throw new RuntimeException(e);
             }
         }
+        //END OF CHALLENGE
+
+        if(args[0].equals("baltop")){
+            try {
+
+                ArrayList<String> gangsArray = new ArrayList<>();
+
+                Gangs gangs = Gangs.getPlugin();
+                QueryBuilder<ServerStats, String> qb = gangs.getService().getServerStatsDao().queryBuilder();
+                // select 2 aggregate functions as the return
+                qb.orderBy("balance",false);
+                // the results will contain 2 string values for the min and max
+                GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
+                // page through the results
+                List<String[]> results = rawResults.getResults();
+
+                int d = results.size();
+                if(results.size()>10){
+                    d = 10;
+                }
+
+
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Top 10 Gang Balances</gradient>"));
+                for (int i = 0;i<d;i++){
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>"+(i+1)+") "+results.get(i)[0]+": "+results.get(i)[results.get(i).length-1]+"</gradient>"));
+
+                }
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
+        if(args[0].equals("memtop")){
+            try {
+
+                ArrayList<String> gangsArray = new ArrayList<>();
+
+                Gangs gangs = Gangs.getPlugin();
+                QueryBuilder<PlayerStats, String> qb = gangs.getService().getPlayerStatsDao().queryBuilder();
+                // select 2 aggregate functions as the return
+                qb.groupBy("uuid");
+                // the results will contain 2 string values for the min and max
+                GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
+                // page through the results
+                List<String[]> results = rawResults.getResults();
+                System.out.print("[");
+                results.forEach(r->{
+                    System.out.print("[");
+                    for (int i=0;i<r.length-1;i++){
+                        System.out.print(r[i]+",");
+                    }
+                    System.out.print(r[r.length-1]+"],");
+
+                });
+                System.out.println("]");
+
+                ArrayList<ArrayList> gm = new ArrayList<ArrayList>();
+
+                gangs.getService().getGangsList().forEach(g->{
+
+                    AtomicInteger count = new AtomicInteger();
+
+                    results.forEach(r->{
+
+                        if(r[2].equals(g)){
+                            count.getAndIncrement();
+                        }
+
+                    });
+
+                    System.out.println(g+": "+count.get()+" members");
+                    ArrayList l = new ArrayList<>();
+                    l.add(g);
+                    l.add(count.get());
+                    gm.add(l);
+                });
+
+                //sort list and print
+
+                System.out.println(gm.get(0).get(0));
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         return true;
     }
 }
