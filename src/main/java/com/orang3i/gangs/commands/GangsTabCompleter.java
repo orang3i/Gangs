@@ -47,6 +47,8 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("set-base");
                     list.add("remove-base");
                     list.add("tp-base");
+                    list.add("summon-all");
+                    list.add("reload");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
@@ -55,14 +57,14 @@ public class GangsTabCompleter implements TabCompleter {
                 if(cmds1i.contains(args[0]) && args.length<=2){
 
                    List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
-                   onlinePlayers.forEach(l-> list.add(l.getDisplayName()));
+                   onlinePlayers.forEach(l-> list.add(l.getName()));
                 }
 
                 List<String> cmds2i = new ArrayList<>();
                 cmds2i.add("set-rank");
                 if(cmds2i.contains(args[0]) && args.length==2){
                     List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
-                    onlinePlayers.forEach(l-> list.add(l.getDisplayName()));
+                    onlinePlayers.forEach(l-> list.add(l.getName()));
 
                 }
                 if(cmds2i.contains(args[0]) && args.length==3){

@@ -30,14 +30,14 @@ public class PlayerChatListener implements Listener {
 
             gang_members.forEach(strings -> {
                 Player ranker = null;
-                if (Bukkit.getPlayerExact(Bukkit.getPlayer(UUID.fromString(strings[0])).getDisplayName()) != null) {
+                if (Bukkit.getPlayerExact(Bukkit.getPlayer(UUID.fromString(strings[0])).getName()) != null) {
 
-                    ranker = Bukkit.getPlayer(Bukkit.getPlayer(UUID.fromString(strings[0])).getDisplayName());
+                    ranker = Bukkit.getPlayer(Bukkit.getPlayer(UUID.fromString(strings[0])).getName());
                 }
                 if(ranker!= null) {
                     //ranker.sendMessage(event.getMessage());
                     try {
-                        gangs.adventure().player(ranker).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>["+gangs.getService().getPlayerStats(event.getPlayer()).getGang()+"] <"+event.getPlayer().getDisplayName()+"> "+event.getMessage()+"</gradient>"));
+                        gangs.adventure().player(ranker).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>["+gangs.getService().getPlayerStats(event.getPlayer()).getGang()+"] <"+event.getPlayer().getName()+"> "+event.getMessage()+"</gradient>"));
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -75,14 +75,14 @@ public class PlayerChatListener implements Listener {
             System.out.println(str[0]);
             currentAllies.forEach(strings -> {
                 Player ranker = null;
-                if (Bukkit.getPlayerExact(Bukkit.getPlayer(UUID.fromString(strings)).getDisplayName()) != null) {
+                if (Bukkit.getPlayerExact(Bukkit.getPlayer(UUID.fromString(strings)).getName()) != null) {
 
-                    ranker = Bukkit.getPlayer(Bukkit.getPlayer(UUID.fromString(strings)).getDisplayName());
+                    ranker = Bukkit.getPlayer(Bukkit.getPlayer(UUID.fromString(strings)).getName());
                 }
                 if(ranker!= null) {
                     //ranker.sendMessage(event.getMessage());
                     try {
-                        gangs.adventure().player(ranker).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>["+gangs.getService().getPlayerStats(event.getPlayer()).getGang()+"] <"+event.getPlayer().getDisplayName()+"> "+event.getMessage()+"</gradient>"));
+                        gangs.adventure().player(ranker).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>["+gangs.getService().getPlayerStats(event.getPlayer()).getGang()+"] <"+event.getPlayer().getName()+"> "+event.getMessage()+"</gradient>"));
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }

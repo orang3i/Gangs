@@ -1,9 +1,11 @@
 package com.orang3i.gangs.commands;
 
 import com.orang3i.gangs.Gangs;
+import com.orang3i.gangs.listeners.PlayerMoveEventListener;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -137,6 +139,31 @@ public class AdventureCommand implements CommandExecutor {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        if(args[0].equals("summon")){
+
+
+            Player p = Bukkit.getPlayer(args[1]);
+
+            System.out.println(args[1]+" "+args[2]);
+            Player summoner = Bukkit.getPlayer(args[2]);
+
+            PlayerMoveEventListener.appendTeleport(p);
+            gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>teloporting don't move for 5 seconds</gradient>"));
+
+            gangs.getServer().getScheduler().scheduleSyncDelayedTask(gangs, new Runnable() {
+                public void run() {
+                    if (PlayerMoveEventListener.teleport.contains(p)) {
+                        System.out.println("WAited");
+                        Location loc = new Location(summoner.getWorld(), summoner.getLocation().getX(), summoner.getLocation().getY(), summoner.getLocation().getZ());
+                        p.teleport(loc);
+                        PlayerMoveEventListener.popTeleport(p);
+                    }
+
+                }
+            }, 20 * 5); // 20 (one second in ticks) * 5 (seconds to wait)
+
         }
         return true;
     }

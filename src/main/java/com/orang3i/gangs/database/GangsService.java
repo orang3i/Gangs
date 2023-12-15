@@ -67,7 +67,7 @@ public class GangsService {
     public  PlayerStats addPlayer(Player player) throws SQLException {
         PlayerStats playerStats = new PlayerStats();
         playerStats.setUuid(player.getUniqueId().toString());
-        playerStats.setUsername(player.getDisplayName());
+        playerStats.setUsername(player.getName());
         playerStatsDao.create(playerStats);
         System.out.println("player added");
         return playerStats;

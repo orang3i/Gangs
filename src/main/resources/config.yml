@@ -20,6 +20,7 @@ gangs:
     ranks-with-vault-perms: [rookie,rookie1,rookie2,leader]
     ranks-with-friendly-fire-perms: [rookie,rookie1,rookie2,leader]
     ranks-with-base-perms: [rookie,rookie1,rookie2,leader]
+    ranks-with-summon-perms: [rookie,rookie1,rookie2,leader]
     force-friendly-fire: false
     force-friendly-fire-disable : false
     friendly-fire-gang: true
