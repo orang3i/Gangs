@@ -49,6 +49,7 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("tp-base");
                     list.add("summon-all");
                     list.add("reload");
+                    list.add("challenge");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
@@ -100,7 +101,32 @@ public class GangsTabCompleter implements TabCompleter {
                         }
 
                     });
+                }
 
+                List<String> cmds5i = new ArrayList<>();
+                cmds5i.add("challenge");
+                cmds5i.add("ally-request");
+                cmds5i.add("ally-neutral");
+                if(cmds5i.contains(args[0]) && args.length==2){
+                    try {
+                        gangs.getService().getGangsList().forEach(g-> list.add(g));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+
+                if(args[0].equals("friendlyfire-allies") && args.length==3){
+                    try {
+                        gangs.getService().getGangsList().forEach(g-> list.add(g));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                if(args[0].equals("friendlyfire-allies") && args.length>3){
+                    list.add("true");
+                    list.add("false");
                 }
             }
         }

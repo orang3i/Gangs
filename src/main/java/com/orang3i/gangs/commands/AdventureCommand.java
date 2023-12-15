@@ -2,6 +2,7 @@ package com.orang3i.gangs.commands;
 
 import com.orang3i.gangs.Gangs;
 import com.orang3i.gangs.listeners.PlayerMoveEventListener;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -14,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
+
+import static net.kyori.adventure.text.event.ClickEvent.runCommand;
 
 public class AdventureCommand implements CommandExecutor {
 
@@ -163,6 +166,35 @@ public class AdventureCommand implements CommandExecutor {
 
                 }
             }, 20 * 5); // 20 (one second in ticks) * 5 (seconds to wait)
+
+        }
+
+
+        if(args[0].equals("challenge")){
+
+
+            String str = String.join(" ", args);
+            String challenged = StringUtils.substringBetween(str, "$%A", "$%A");
+            String challenger =StringUtils.substringBetween(str, "$%B", "$%B") ;
+            String chp =StringUtils.substringBetween(str, "$%C", "$%C") ;
+
+
+            Bukkit.getOnlinePlayers().forEach(p->{
+
+
+                try {
+                    if(gangs.getService().getPlayerStats(p).getGang().equals(challenged) || gangs.getService().getPlayerStats(p).getGang().equals(challenger)) {
+
+                        gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>There is a fight between "+challenger+" and" +challenged+" click accept to teleport to warzone</gradient>"));
+
+                        gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand summon "+p.getName()+" " + chp)).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>[click me to tp]"))));
+
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
 
         }
         return true;

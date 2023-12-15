@@ -27,10 +27,8 @@ public class Tester implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         //Component comp1 = MiniMessage.miniMessage().deserialize( "<gradient:#9281fb:#eb93fc>Welcome Tester!</gradient>");
-        gangs.adventure().player((Player) sender).sendMessage(MiniMessage.miniMessage().deserialize( "<gradient:#8e28ed:#f52c2c>Welcome Tester! get testing ;)</gradient>"));
         try {
-                gangs.getService().getBaseCoords("tokyo manji",gangs.getService().getBases("tokyo manji").get(2));
-                System.out.println("hehheeewewe");
+                gangs.getService().getGangsList();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

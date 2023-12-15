@@ -18,6 +18,9 @@ public class JoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) throws SQLException {
         try {
             GangsCommands.tpCooldowns.put(event.getPlayer().getName(), (long) -1);
+            GangsCommands.challengeCooldowns.put(event.getPlayer().getName(), (long) -1);
+            GangsCommands.allyreqCooldowns.put(event.getPlayer().getName(), (long) -1);
+            GangsCommands.inviteCooldowns.put(event.getPlayer().getName(), (long) -1);
             if(!gangs.getService().playerExists(event.getPlayer())){
                 System.out.println("player does not exist yet");
                 gangs.getService().addPlayer((event.getPlayer()));

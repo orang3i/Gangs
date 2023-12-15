@@ -21,13 +21,16 @@ gangs:
     ranks-with-friendly-fire-perms: [rookie,rookie1,rookie2,leader]
     ranks-with-base-perms: [rookie,rookie1,rookie2,leader]
     ranks-with-summon-perms: [rookie,rookie1,rookie2,leader]
+    ranks-with-challenge-perms: [rookie,rookie1,rookie2,leader]
     force-friendly-fire: false
     force-friendly-fire-disable : false
     friendly-fire-gang: true
     force-friendly-fire-disable-allies: false
     friendly-fire-allies: true
     base-tp-cooldown: 60 #seconds
-
+    challenge-cooldown: 60 #seconds
+    invite-cooldown: 60 #seconds
+    ally-request-cooldown : 60 #seconds
 
 
 

@@ -465,4 +465,25 @@ public void setBalance(String gang,String balance)throws SQLException{
             playerStatsDao.update(playerStats);
         }
     }
+
+    public ArrayList<String> getGangsList() throws SQLException {
+
+        ArrayList<String> gangsArray = new ArrayList<>();
+
+        Gangs gangs = Gangs.getPlugin();
+        QueryBuilder<ServerStats, String> qb = gangs.getService().getServerStatsDao().queryBuilder();
+        // select 2 aggregate functions as the return
+        qb.groupBy("gangs");
+        // the results will contain 2 string values for the min and max
+        GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
+        // page through the results
+
+        List<String[]> results = rawResults.getResults();
+
+
+        results.forEach(r-> gangsArray.add(r[0]));
+
+
+        return gangsArray;
+    }
 }
