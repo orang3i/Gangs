@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.lang.Math;
-import java.util.function.ToIntFunction;
 
 import static net.kyori.adventure.text.event.ClickEvent.runCommand;
 
