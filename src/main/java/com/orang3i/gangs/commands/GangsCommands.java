@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.lang.Math;
+import java.util.function.ToIntFunction;
 
 import static net.kyori.adventure.text.event.ClickEvent.runCommand;
 
@@ -905,7 +906,7 @@ public class GangsCommands implements CommandExecutor {
                 }
 
 
-                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Top 10 Gang Balances</gradient>"));
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Top 10 Gangs [Balance]</gradient>"));
                 for (int i = 0;i<d;i++){
                     gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>"+(i+1)+") "+results.get(i)[0]+": "+results.get(i)[results.get(i).length-1]+"</gradient>"));
 
@@ -963,8 +964,18 @@ public class GangsCommands implements CommandExecutor {
                 });
 
                 //sort list and print
+                gm.sort(Comparator.comparing(x -> x.get(1), Collections.reverseOrder()));
 
-                System.out.println(gm.get(0).get(0));
+                int d = gm.size();
+                if(gm.size()>10){
+                    d = 10;
+                }
+
+
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Top 10 Gangs [Member Count]</gradient>"));
+                for (int i = 0;i<d;i++){
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>"+(i+1)+") "+ gm.get(i).get(0) +": "+ gm.get(i).get(gm.get(i).size()-1) +"</gradient>"));
+                }
 
             } catch (SQLException e) {
                 throw new RuntimeException(e);

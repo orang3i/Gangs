@@ -50,6 +50,8 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("summon-all");
                     list.add("reload");
                     list.add("challenge");
+                    list.add("baltop");
+                    list.add("memtop");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
