@@ -885,6 +885,8 @@ public class GangsCommands implements CommandExecutor {
         }
         //END OF CHALLENGE
 
+
+        //START OF BALTOP
         if(args[0].equals("baltop")){
             try {
 
@@ -899,24 +901,42 @@ public class GangsCommands implements CommandExecutor {
                 // page through the results
                 List<String[]> results = rawResults.getResults();
 
-                int d = results.size();
-                if(results.size()>10){
+
+
+                ArrayList<ArrayList> bal = new ArrayList<ArrayList>();
+
+
+                for (int i = 0;i<results.size();i++){
+
+                    ArrayList l = new ArrayList<>();
+                    l.add(results.get(i)[0]);
+                    l.add(Integer.valueOf( results.get(i)[results.get(i).length-1]));
+
+                    bal.add(l);
+                }
+
+                bal.sort(Comparator.comparing(x -> x.get(1), Collections.reverseOrder()));
+
+
+                int d = bal.size();
+                if(bal.size()>10){
                     d = 10;
                 }
 
-
                 gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Top 10 Gangs [Balance]</gradient>"));
                 for (int i = 0;i<d;i++){
-                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>"+(i+1)+") "+results.get(i)[0]+": "+results.get(i)[results.get(i).length-1]+"</gradient>"));
-
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>"+(i+1)+") "+ bal.get(i).get(0) +": "+ bal.get(i).get(bal.get(i).size()-1) +"</gradient>"));
                 }
+
 
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
+        //END OF BALTOP
 
 
+        //START OF MEMTOP
         if(args[0].equals("memtop")){
             try {
 
@@ -980,7 +1000,9 @@ public class GangsCommands implements CommandExecutor {
                 throw new RuntimeException(e);
             }
         }
+        //END OF MEMTOP
 
+        //START OF MEMLIST
         if(args[0].equals("memlist")){
 
 
@@ -1039,7 +1061,43 @@ public class GangsCommands implements CommandExecutor {
                 throw new RuntimeException(e);
             }
         }
+        //END OF MEMLIST
+
+
+
+        if(args[0].equals("admin") &&args.length>1){
+
+            //START OF ADMIN SET GANG
+            if(args[1].equals("set-gang") && args.length>=4){
+
+                StringBuilder concat_gang = new StringBuilder();
+
+                for (int i = 3; i <= args.length-1; i++) {
+                    concat_gang.append(args[i] + " ");
+                }
+
+                String gang = concat_gang.toString().trim();
+
+                Player p = Bukkit.getPlayer(args[2]);
+
+                try {
+                    gangs.getService().setPlayerGang(p,gang);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>"+p.getName()+" is now a member of "+gang+"</gradient>"));
+                gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are now a member of "+gang+"</gradient>"));
+
+
+            }
+            //END OF ADMIN SET GANG
+
+
+        }
 
         return true;
     }
+
+
 }

@@ -53,6 +53,7 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("baltop");
                     list.add("memtop");
                     list.add("memlist");
+                    list.add("admin");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
@@ -131,6 +132,28 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("true");
                     list.add("false");
                 }
+
+
+                if(args[0].equals("admin")&& args.length<=2){
+                    list.add("set-gang");
+                }
+
+                List<String> cmds7i = new ArrayList<>();
+                cmds7i.add("set-gang");
+                if(args[0].equals("admin") && cmds7i.contains(args[1])){
+                    try {
+
+                        if(args.length<=3) {
+                            Bukkit.getOnlinePlayers().forEach(p -> list.add(p.getName()));
+                        }
+                        if(args.length>3){
+                            gangs.getService().getGangsList().forEach(g-> list.add(g));
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
             }
         }
 
