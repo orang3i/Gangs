@@ -981,6 +981,65 @@ public class GangsCommands implements CommandExecutor {
             }
         }
 
+        if(args[0].equals("memlist")){
+
+
+            try {
+                ArrayList<String> gangsArray = new ArrayList<>();
+
+                Gangs gangs = Gangs.getPlugin();
+                QueryBuilder<PlayerStats, String> qb = gangs.getService().getPlayerStatsDao().queryBuilder();
+                // select 2 aggregate functions as the return
+                qb.groupBy("uuid");
+                // the results will contain 2 string values for the min and max
+                GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
+                // page through the results
+                List<String[]> results = rawResults.getResults();
+                System.out.print("[");
+                results.forEach(r -> {
+                    System.out.print("[");
+                    for (int i = 0; i < r.length - 1; i++) {
+                        System.out.print(r[i] + ",");
+                    }
+                    System.out.print(r[r.length - 1] + "],");
+
+                });
+                System.out.println("]");
+
+                ArrayList<String> pl = new ArrayList<>();
+
+                AtomicInteger count = new AtomicInteger();
+
+                results.forEach(r -> {
+
+                    try {
+                        if (r[2].equals(gangs.getService().getPlayerStats(player).getGang())) {
+                            pl.add(r[1]);
+                            count.getAndIncrement();
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                });
+
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Total Members: "+count.get()+"</gradient>"));
+
+                StringBuffer buff = new StringBuffer();
+
+                buff.append("Members: ");
+                for(int i =0;i<pl.size();i++){
+                    buff.append(pl.get(i));
+                    buff.append(",");
+                }
+                buff.deleteCharAt(buff.length()-1);
+                String mems = buff.toString();
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>"+mems+"</gradient>"));
+            }catch (SQLException e){
+                throw new RuntimeException(e);
+            }
+        }
+
         return true;
     }
 }
