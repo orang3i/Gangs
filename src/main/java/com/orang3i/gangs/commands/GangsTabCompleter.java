@@ -52,6 +52,7 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("challenge");
                     list.add("baltop");
                     list.add("memtop");
+                    list.add("memlist");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
