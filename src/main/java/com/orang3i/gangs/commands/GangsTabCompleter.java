@@ -54,6 +54,8 @@ public class GangsTabCompleter implements TabCompleter {
                     list.add("memtop");
                     list.add("memlist");
                     list.add("admin");
+                    list.add("player-profile");
+                    list.add("gang-profile");
                 }
 
                 List<String> cmds1i = new ArrayList<>();
@@ -136,6 +138,13 @@ public class GangsTabCompleter implements TabCompleter {
 
                 if(args[0].equals("admin")&& args.length<=2){
                     list.add("set-gang");
+                    list.add("set-rank");
+                    list.add("deposit");
+                    list.add("withdraw");
+                    list.add("profile-player");
+                    list.add("profile-gang");
+                    list.add("rank-list");
+
                 }
 
                 List<String> cmds7i = new ArrayList<>();
@@ -152,6 +161,64 @@ public class GangsTabCompleter implements TabCompleter {
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
+                }
+
+
+                List<String> cmds8i = new ArrayList<>();
+                cmds8i.add("deposit");
+                cmds8i.add("withdraw");
+                cmds8i.add("profile-gang");
+                if(args[0].equals("admin") && cmds7i.contains(args[1])){
+                    try {
+
+                        if(args.length<=3) {
+                            gangs.getService().getGangsList().forEach(g-> list.add(g));
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                List<String> cmds9i = new ArrayList<>();
+                cmds9i.add("profile-player");
+                if(args[0].equals("admin") && cmds7i.contains(args[1])){
+
+                    if(args.length<=3) {
+                        Bukkit.getOnlinePlayers().forEach(p -> list.add(p.getName()));
+                    }
+                }
+
+                List<String> cmds10i = new ArrayList<>();
+                cmds10i.add("set-rank");
+                if(args[0].equals("admin") && cmds7i.contains(args[1])){
+
+                    if(args.length<=3) {
+                        Bukkit.getOnlinePlayers().forEach(p -> list.add(p.getName()));
+                    }
+
+                    if(args.length>3){
+                        List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks");
+                        ranks.forEach(l-> list.add(l));
+                    }
+                }
+
+                List<String> cmds11i = new ArrayList<>();
+                cmds11i.add("rank-list");
+                if(args[0].equals("admin") && cmds7i.contains(args[1])){
+
+                    if(args.length<=3){
+                        List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks");
+                        ranks.forEach(l-> list.add(l));
+                    }
+
+                    if(args.length>3) {
+                        try {
+                            gangs.getService().getGangsList().forEach(g-> list.add(g));
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
                 }
 
             }
