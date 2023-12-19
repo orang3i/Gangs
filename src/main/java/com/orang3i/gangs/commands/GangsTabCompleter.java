@@ -168,7 +168,7 @@ public class GangsTabCompleter implements TabCompleter {
                 cmds8i.add("deposit");
                 cmds8i.add("withdraw");
                 cmds8i.add("profile-gang");
-                if(args[0].equals("admin") && cmds7i.contains(args[1])){
+                if(args[0].equals("admin") && cmds8i.contains(args[1])){
                     try {
 
                         if(args.length<=3) {
@@ -181,7 +181,7 @@ public class GangsTabCompleter implements TabCompleter {
 
                 List<String> cmds9i = new ArrayList<>();
                 cmds9i.add("profile-player");
-                if(args[0].equals("admin") && cmds7i.contains(args[1])){
+                if(args[0].equals("admin") && cmds9i.contains(args[1])){
 
                     if(args.length<=3) {
                         Bukkit.getOnlinePlayers().forEach(p -> list.add(p.getName()));
@@ -190,7 +190,7 @@ public class GangsTabCompleter implements TabCompleter {
 
                 List<String> cmds10i = new ArrayList<>();
                 cmds10i.add("set-rank");
-                if(args[0].equals("admin") && cmds7i.contains(args[1])){
+                if(args[0].equals("admin") && cmds10i.contains(args[1])){
 
                     if(args.length<=3) {
                         Bukkit.getOnlinePlayers().forEach(p -> list.add(p.getName()));
@@ -204,7 +204,7 @@ public class GangsTabCompleter implements TabCompleter {
 
                 List<String> cmds11i = new ArrayList<>();
                 cmds11i.add("rank-list");
-                if(args[0].equals("admin") && cmds7i.contains(args[1])){
+                if(args[0].equals("admin") && cmds11i.contains(args[1])){
 
                     if(args.length<=3){
                         List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks");

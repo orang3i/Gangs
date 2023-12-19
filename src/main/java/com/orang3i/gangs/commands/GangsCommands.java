@@ -1148,6 +1148,8 @@ public class GangsCommands implements CommandExecutor {
 
                 try {
                     gangs.getService().setPlayerGang(p,gang);
+                    List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks");
+                    gangs.getService().setPlayerRank(p,ranks.get(0));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -1192,18 +1194,19 @@ public class GangsCommands implements CommandExecutor {
 
                 StringBuilder concat_gang = new StringBuilder();
 
-                for (int i = 2; i <= args.length-1; i++) {
+                for (int i = 2; i < args.length-1; i++) {
                     concat_gang.append(args[i] + " ");
                 }
 
                 String gang = concat_gang.toString().trim();
+                System.out.println(gang);
 
                     int amount = Math.abs(Math.round(Integer.valueOf(args[args.length-1])));
                 try {
                     int newBalance = Integer.parseInt(gangs.getService().getServerStats(gang).getBalance()) +amount;
                     gangs.getService().setBalance(gang,Integer.toString(newBalance));
                     gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>deposited "+ amount+"$</gradient>"));
-                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance "+ (gangs.getService().getServerStats(gangs.getService().getPlayerStats(player).getGang()).getBalance()) +"$</gradient>"));
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance "+ (gangs.getService().getServerStats(gang).getBalance()) +"$</gradient>"));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -1218,7 +1221,7 @@ public class GangsCommands implements CommandExecutor {
 
                 StringBuilder concat_gang = new StringBuilder();
 
-                for (int i = 2; i <= args.length-1; i++) {
+                for (int i = 2; i < args.length-1; i++) {
                     concat_gang.append(args[i] + " ");
                 }
 
@@ -1232,7 +1235,7 @@ public class GangsCommands implements CommandExecutor {
                         int newBalance = Integer.parseInt(gangs.getService().getServerStats(gang).getBalance()) - amount;
                         gangs.getService().setBalance(gang,Integer.toString(newBalance));
                         gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>withdrawn "+ amount+"$</gradient>"));
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance "+ (gangs.getService().getServerStats(gangs.getService().getPlayerStats(player).getGang()).getBalance()) +"$</gradient>"));
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance "+ (gangs.getService().getServerStats(gang).getBalance()) +"$</gradient>"));
                     }else {
                         gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you cannot withdraw more than your gang balance</gradient>"));
                     }
