@@ -22,9 +22,7 @@ public class SetGang implements CommandExecutor {
 
         try {
             if(!gangs.getService().playerExists(player)){
-                System.out.println("player does not exist yet");
                 gangs.getService().addPlayer((player));
-                System.out.println("player hopefully exists now ");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -37,7 +35,6 @@ public class SetGang implements CommandExecutor {
                 concat_gang.append(args[i]+" ");
             }
             String gang_concacted = concat_gang.toString();
-            System.out.println(gang_concacted);
             gangs.getService().setPlayerGang(player,gang_concacted.trim());
         } catch (SQLException e) {
             throw new RuntimeException(e);

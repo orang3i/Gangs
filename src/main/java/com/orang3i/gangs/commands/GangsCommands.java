@@ -185,7 +185,6 @@ public class GangsCommands implements CommandExecutor {
                         try {
 
                             try {
-                                System.out.println("gang exists");
                                 gangExists = gangs.getService().getRawResults("gangs", gang_concacted.trim()).get(0)[0].equals(gang_concacted.trim());
                             } catch (IndexOutOfBoundsException e) {
 
@@ -205,8 +204,6 @@ public class GangsCommands implements CommandExecutor {
                                 gangs.getService().tempSolGangCreateAlly(gang_concacted.trim());
                                 gangs.getService().tempSolGangCreateBase(gang_concacted.trim());
                                 gangs.getService().tempSolGangCreateAllyFriendlyFire(gang_concacted.trim());
-                                System.out.println(gangs.getService().getPlayerStats(player).getGang());
-                                System.out.println(gangs.getService().getPlayerStats(player).getRank());
                                 gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gang successfully created you are now the leader of " + gang_concacted.trim() + "</gradient>"));
 
                             } catch (SQLException e) {
@@ -331,7 +328,6 @@ public class GangsCommands implements CommandExecutor {
                         gang_members.forEach(strings -> {
                             try {
 
-                                System.out.println(strings[0] + "here");
                                 if(!UUID.fromString(strings[0]).equals(gangs.getService().getPlayerUUID(player.getName()))){
                                 Player bander = null;
                                 if (Bukkit.getPlayerExact(Bukkit.getPlayer(UUID.fromString(strings[0])).getName()) != null) {
@@ -388,18 +384,15 @@ public class GangsCommands implements CommandExecutor {
         //END OF FRIENDLY FIRE SUBCOMMAND
         //START OF TOGGLEGANGCHAT SUBCOMMAND
         if (args[0].equals("gang-chat-toggle")) {
-            System.out.println("dsds");
 
             try {
                 if (!gangs.getService().getPlayerStats(player).getGang().equals("none")) {
                     if (gangs.getService().getPlayerStats(player).getGangchat().equals("false")) {
                         gangs.getService().setPlayerGangChat(player, "true");
-                        System.out.println("was false");
                         gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gang only chat enabled</gradient>"));
                     } else {
                         if (gangs.getService().getPlayerStats(player).getGangchat().equals("true")) {
                             gangs.getService().setPlayerGangChat(player, "false");
-                            System.out.println("was true");
                             gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gang only chat disabled</gradient>"));
                         }
                     }
@@ -542,22 +535,18 @@ public class GangsCommands implements CommandExecutor {
         //END OF ALLY-NEUTRAL COMMAND
         //START OF TOGGLEALLYCHAT SUBCOMMAND
         if (args[0].equals("ally-chat-toggle")) {
-            System.out.println("dsds");
 
             try {if(gangs.getService().getAllies(gangs.getService().getPlayerStats(player).getGang()).size()>=2){
                 if (gangs.getService().getPlayerStats(player).getAllychat().equals("false")) {
                     gangs.getService().setPlayerAllyChat(player, "true");
-                    System.out.println("was false");
                     gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>ally only chat enabled</gradient>"));
                 } else {
                     if (gangs.getService().getPlayerStats(player).getAllychat().equals("true")) {
                         gangs.getService().setPlayerAllyChat(player, "false");
-                        System.out.println("was true");
                         gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>ally only chat disabled</gradient>"));
                     }
                 }
             }else {
-                System.out.println("your gang has no allies");
             }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -585,7 +574,6 @@ public class GangsCommands implements CommandExecutor {
                             gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>please wait " + secondsLeft + " seconds before using that command</gradient>"));
                         } else {
 
-                            System.out.println("it got here");
 
                             allyreqCooldowns.put(sender.getName(), System.currentTimeMillis());
 
@@ -598,16 +586,12 @@ public class GangsCommands implements CommandExecutor {
                             String gang_concacted = concat_gang.toString().trim();
 
                             if (!gang_concacted.equals(gangs.getService().getPlayerStats(player).getGang())) {
-                                System.out.println(gang_concacted + " here");
                                 AtomicInteger count = new AtomicInteger();
                                 Bukkit.getOnlinePlayers().forEach(p -> {
                                     try {
 
                                         if ((gangs.getService().getPlayerStats(p).getGang().equals(gang_concacted)) && ranks.contains(gangs.getService().getPlayerStats(p).getRank())) {
-                                            System.out.println("hhh");
-                                            System.out.println(args[args.length - 1]);
                                             if (args[args.length - 1].equals("true")) {
-                                                System.out.println("wjhwhe");
                                                 gangs.adventure().player(p.getPlayer()).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is requested to turn on friendly fire with " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
                                                 int lenganga = gang_concacted.length();
                                                 int lengangb = gangs.getService().getPlayerStats(player).getGang().length();
@@ -827,7 +811,6 @@ public class GangsCommands implements CommandExecutor {
                                 gangs.getServer().getScheduler().scheduleSyncDelayedTask(gangs, new Runnable() {
                                     public void run() {
                                         if (PlayerMoveEventListener.teleport.contains(player)) {
-                                            System.out.println("WAited");
                                             Location loc = new Location(locWorld, locX, locY, locZ);
                                             player.teleport(loc);
                                             PlayerMoveEventListener.popTeleport(player);
@@ -910,7 +893,7 @@ public class GangsCommands implements CommandExecutor {
 
                             String gang = concat_gang.toString().trim();
 
-                            System.out.println(gang);
+
 
                             if (gangs.getService().getGangsList().contains(gang)) {
 
@@ -948,7 +931,6 @@ public class GangsCommands implements CommandExecutor {
                                 }
                             } else {
 
-                                System.out.println(gangs.getService().getGangsList());
                                 gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>such gang does not exist</gradient>"));
                             }
                         }
@@ -1030,16 +1012,16 @@ public class GangsCommands implements CommandExecutor {
                 GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
                 // page through the results
                 List<String[]> results = rawResults.getResults();
-                System.out.print("[");
+
                 results.forEach(r->{
-                    System.out.print("[");
+
                     for (int i=0;i<r.length-1;i++){
-                        System.out.print(r[i]+",");
+
                     }
-                    System.out.print(r[r.length-1]+"],");
+
 
                 });
-                System.out.println("]");
+
 
                 ArrayList<ArrayList> gm = new ArrayList<ArrayList>();
 
@@ -1055,7 +1037,6 @@ public class GangsCommands implements CommandExecutor {
 
                     });
 
-                    System.out.println(g+": "+count.get()+" members");
                     ArrayList l = new ArrayList<>();
                     l.add(g);
                     l.add(count.get());
@@ -1097,16 +1078,11 @@ public class GangsCommands implements CommandExecutor {
                 GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
                 // page through the results
                 List<String[]> results = rawResults.getResults();
-                System.out.print("[");
                 results.forEach(r -> {
-                    System.out.print("[");
                     for (int i = 0; i < r.length - 1; i++) {
-                        System.out.print(r[i] + ",");
                     }
-                    System.out.print(r[r.length - 1] + "],");
 
                 });
-                System.out.println("]");
 
                 ArrayList<String> pl = new ArrayList<>();
 
@@ -1172,16 +1148,11 @@ public class GangsCommands implements CommandExecutor {
                 GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
                 // page through the results
                 List<String[]> results = rawResults.getResults();
-                System.out.print("[");
                 results.forEach(r -> {
-                    System.out.print("[");
                     for (int i = 0; i < r.length - 1; i++) {
-                        System.out.print(r[i] + ",");
                     }
-                    System.out.print(r[r.length - 1] + "],");
 
                 });
-                System.out.println("]");
 
                 ArrayList<String> pl = new ArrayList<>();
 
@@ -1286,7 +1257,6 @@ public class GangsCommands implements CommandExecutor {
                             }
 
                             String gang = concat_gang.toString().trim();
-                            System.out.println(gang);
 
                             int amount = Math.abs(Math.round(Integer.valueOf(args[args.length - 1])));
                             try {
@@ -1392,16 +1362,11 @@ public class GangsCommands implements CommandExecutor {
                                     GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
                                     // page through the results
                                     List<String[]> results = rawResults.getResults();
-                                    System.out.print("[");
                                     results.forEach(r -> {
-                                        System.out.print("[");
                                         for (int i = 0; i < r.length - 1; i++) {
-                                            System.out.print(r[i] + ",");
                                         }
-                                        System.out.print(r[r.length - 1] + "],");
 
                                     });
-                                    System.out.println("]");
 
                                     ArrayList<String> pl = new ArrayList<>();
 
@@ -1455,16 +1420,11 @@ public class GangsCommands implements CommandExecutor {
                                 GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
                                 // page through the results
                                 List<String[]> results = rawResults.getResults();
-                                System.out.print("[");
                                 results.forEach(r -> {
-                                    System.out.print("[");
                                     for (int i = 0; i < r.length - 1; i++) {
-                                        System.out.print(r[i] + ",");
                                     }
-                                    System.out.print(r[r.length - 1] + "],");
 
                                 });
-                                System.out.println("]");
 
                                 ArrayList<String> pl = new ArrayList<>();
 

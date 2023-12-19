@@ -22,10 +22,7 @@ public class GetGang implements CommandExecutor {
 
         try {
             if(!gangs.getService().playerExists(player)){
-                System.out.println("player does not exist yet");
-                gangs.getService().addPlayer((player));
-                System.out.println("player hopefully exists now ");
-            }
+                gangs.getService().addPlayer((player));}
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

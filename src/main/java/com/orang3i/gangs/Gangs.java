@@ -97,13 +97,11 @@ public final class Gangs extends JavaPlugin {
             gangsService = new GangsService();
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Cannot connect to database" + e.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
         }
     }
 
     public void testLogger(){
-        System.out.println("lmao");
     }
 
     public void initVault(){

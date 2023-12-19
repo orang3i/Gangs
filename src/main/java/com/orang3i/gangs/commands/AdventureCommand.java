@@ -59,12 +59,9 @@ public class AdventureCommand implements CommandExecutor {
                 String str = String.join(" ", args);
                 String concat_ganga = StringUtils.substringBetween(str, "$%A", "$%A");
                 String concat_gangb =StringUtils.substringBetween(str, "$%B", "$%B") ;
-                System.out.println(concat_ganga.trim());
-                System.out.println(concat_gangb.trim());
                 if(gangs.getService().getAllies(concat_gangb.trim()).contains(concat_ganga.trim())){
 
                     if (Bukkit.getPlayerExact(args[args.length - 1]) != null) {
-                        System.out.println(args[args.length - 1]);
                         Player sent = Bukkit.getPlayer(gangs.getService().getPlayerUUID(args[args.length - 1]));
                         gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are already allies with " + concat_ganga + "! </gradient>"));
                     }
@@ -95,23 +92,18 @@ public class AdventureCommand implements CommandExecutor {
                 String concat_ganga = StringUtils.substringBetween(str, "$%A", "$%A");
                 String concat_gangb =StringUtils.substringBetween(str, "$%B", "$%B") ;
 
-                System.out.println(concat_ganga.trim());
-                System.out.println(concat_gangb.trim());
+
+
                 if(gangs.getService().getAllies(concat_gangb.trim()).contains(concat_ganga.trim())){
-                    System.out.println(args.length);
-                    System.out.println(args[args.length-1]);
                     if(args[args.length-1].equals("true")){
                         if(gangs.getService().getAlliesFriendlyFire(concat_ganga).contains(concat_gangb)){
                             if (Bukkit.getPlayerExact(args[args.length - 2]) != null) {
-                                System.out.println(args[args.length - 2]);
                                 Player sent = Bukkit.getPlayer(gangs.getService().getPlayerUUID(args[args.length - 2]));
                                 gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is already on!</gradient>"));
                             }                     }else {
-                            System.out.println("wee");
                             gangs.getService().setFriendlyFireAllies(concat_ganga.trim(), concat_gangb.trim());
                             gangs.getService().setFriendlyFireAllies(concat_gangb.trim(), concat_ganga.trim());
                             if (Bukkit.getPlayerExact(args[args.length - 2]) != null) {
-                                System.out.println(args[args.length - 2]);
                                 Player sent = Bukkit.getPlayer(gangs.getService().getPlayerUUID(args[args.length - 2]));
                                 gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is on</gradient>"));
                             }
@@ -124,7 +116,6 @@ public class AdventureCommand implements CommandExecutor {
                         gangs.getService().removeAlliesFriendlyFire(concat_ganga.trim(),concat_gangb.trim());
                         gangs.getService().removeAlliesFriendlyFire(concat_gangb.trim(),concat_ganga.trim());
                         if (Bukkit.getPlayerExact(args[args.length - 2]) != null) {
-                            System.out.println(args[args.length - 2]);
                             Player sent = Bukkit.getPlayer(gangs.getService().getPlayerUUID(args[args.length - 2]));
                             gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>friendly fire is off</gradient>"));
                         }
@@ -135,7 +126,6 @@ public class AdventureCommand implements CommandExecutor {
                     }
                 }else {
                     if (Bukkit.getPlayerExact(args[args.length - 1]) != null) {
-                        System.out.println(args[args.length - 1]);
                         Player sent = Bukkit.getPlayer(gangs.getService().getPlayerUUID(args[args.length - 1]));
                         gangs.adventure().player(sent).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are not allies</gradient>"));
                     }                }
@@ -149,7 +139,6 @@ public class AdventureCommand implements CommandExecutor {
 
             Player p = Bukkit.getPlayer(args[1]);
 
-            System.out.println(args[1]+" "+args[2]);
             Player summoner = Bukkit.getPlayer(args[2]);
 
             PlayerMoveEventListener.appendTeleport(p);
@@ -158,7 +147,6 @@ public class AdventureCommand implements CommandExecutor {
             gangs.getServer().getScheduler().scheduleSyncDelayedTask(gangs, new Runnable() {
                 public void run() {
                     if (PlayerMoveEventListener.teleport.contains(p)) {
-                        System.out.println("WAited");
                         Location loc = new Location(summoner.getWorld(), summoner.getLocation().getX(), summoner.getLocation().getY(), summoner.getLocation().getZ());
                         p.teleport(loc);
                         PlayerMoveEventListener.popTeleport(p);

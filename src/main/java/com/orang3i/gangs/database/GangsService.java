@@ -49,7 +49,6 @@ public class GangsService {
                 e.printStackTrace();
             }
             String url = "jdbc:mysql://"+username+":"+password+"@"+host+":"+port+"/"+dbname;
-            System.out.println(url);
 
             connectionSource   = new JdbcConnectionSource(url);
 
@@ -69,20 +68,17 @@ public class GangsService {
         playerStats.setUuid(player.getUniqueId().toString());
         playerStats.setUsername(player.getName());
         playerStatsDao.create(playerStats);
-        System.out.println("player added");
         return playerStats;
     }
 
 
 
     public boolean playerExists(Player player) throws SQLException{
-        System.out.println("player exsits");
         return playerStatsDao.idExists(player.getUniqueId().toString());
 
     }
 
     public boolean playerExists(UUID uuid) throws SQLException{
-        System.out.println("player exsits");
         return playerStatsDao.idExists(uuid.toString());
 
     }
@@ -192,7 +188,6 @@ public void setBalance(String gang,String balance)throws SQLException{
         return serverStatsDao;
     }
     public void addGangs(String gang) throws SQLException {
-        System.out.println("added");
         ServerStats serverStats = new ServerStats();
         serverStats.setGangs(gang);
         serverStatsDao.create(serverStats);
@@ -221,7 +216,6 @@ public void setBalance(String gang,String balance)throws SQLException{
             alliesString = alliesString+test+",";
         }
         alliesString = alliesString+ally+"]";
-        System.out.println(alliesString);
         serverStats.setFriendlyFireAllies(alliesString);
         serverStatsDao.update(serverStats);
 
@@ -266,7 +260,6 @@ public void setBalance(String gang,String balance)throws SQLException{
     }
     public void deleteGangs(String gang) throws SQLException {
         //delete a gang
-        System.out.println("deleted");
         serverStatsDao.deleteById(gang);
     }
 
@@ -359,9 +352,7 @@ public void setBalance(String gang,String balance)throws SQLException{
     public String getBaseCoords(String gang,String base) throws SQLException {
 
         int coordsIndex = getBases(gang).indexOf(base);
-        System.out.println(coordsIndex);
         String coords = getBasesCoordsList(gang).get(coordsIndex);
-        System.out.println(coords);
         return coords;
     }
     public void setBases(String gang,String base,String world,String x , String y , String z) throws SQLException {
@@ -379,16 +370,13 @@ public void setBalance(String gang,String balance)throws SQLException{
             baseString = baseString+test+",";
         }
         baseString = baseString+base+"]";
-        System.out.println(baseString);
         String coords = "$W"+world+"$W $X"+x+"$X $Y"+y+"$Y $Z"+z+"$Z";
-        System.out.println(coords);
         String baseCoordsString = getServerStats(gang).getBaseCoords().substring(1, getServerStats(gang).getBaseCoords().length() - 1);
         ArrayList<String> tmm= new ArrayList<String>( Arrays.asList(baseCoordsString.split(",")));
         baseCoordsString="[";
         int j;
         for (j=0;j<tmm.size();j++){
             String test = tmm.get(j).trim();
-            System.out.println(j);
             baseCoordsString = baseCoordsString+test+",";
         }
         baseCoordsString = baseCoordsString+coords+"]";

@@ -25,7 +25,6 @@ public class PlayerMoveEventListener implements Listener {
 
     public static void appendTeleport(Player player){
 
-        System.out.println("sehsd");
         if(!teleport.contains(player)){
         teleport.add(player);}
     }
@@ -44,7 +43,6 @@ public class PlayerMoveEventListener implements Listener {
 
 
         if(teleport.contains(player)) {
-            System.out.println("popped");
             if(event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ()) {
                 gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>You moved teleport cancelled</gradient>"));
                 teleport.remove(player);

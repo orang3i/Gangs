@@ -35,9 +35,7 @@ public class GetGangMembers implements CommandExecutor {
 
         try {
             if(!gangs.getService().playerExists(player)){
-                System.out.println("player does not exist yet");
                 gangs.getService().addPlayer((player));
-                System.out.println("player hopefully exists now ");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -55,11 +53,10 @@ public class GetGangMembers implements CommandExecutor {
             // page through the results
             List<String[]> results = rawResults.getResults();
 
-            results.forEach(s -> System.out.println(s[1]));
+
 
             results.forEach(s -> {
                 try {
-                    System.out.println(s[0]);
                     gangs.adventure().player(Bukkit.getPlayer(UUID.fromString(s[0].toString()))).sendMessage(MiniMessage.miniMessage().deserialize( "<gradient:#8e28ed:#f52c2c>you are summoned by leader of " + gangs.getService().getPlayerStats(Bukkit.getPlayer(UUID.fromString(s[0].toString()))).getGang()  +"</gradient>"));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

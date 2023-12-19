@@ -22,9 +22,7 @@ public class JoinListener implements Listener {
             GangsCommands.allyreqCooldowns.put(event.getPlayer().getName(), (long) -1);
             GangsCommands.inviteCooldowns.put(event.getPlayer().getName(), (long) -1);
             if(!gangs.getService().playerExists(event.getPlayer())){
-                System.out.println("player does not exist yet");
                 gangs.getService().addPlayer((event.getPlayer()));
-                System.out.println("player hopefully exists now ");
 
 
             }

@@ -24,7 +24,6 @@ public class PlayerChatListener implements Listener {
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) throws SQLException {
         if(gangs.getService().getPlayerStats(event.getPlayer()).getGangchat().equals("true")){
-            System.out.println("sdsdss");
             event.setCancelled(true);
             List<String[]> gang_members = gangs.getService().getRawPlayerResults("gang", gangs.getService().getPlayerStats(event.getPlayer()).getGang());
 
@@ -46,7 +45,6 @@ public class PlayerChatListener implements Listener {
         }
 
         if(gangs.getService().getPlayerStats(event.getPlayer()).getAllychat().equals("true")){
-            System.out.println("sdsdss");
             event.setCancelled(true);
             ArrayList<String> allies = gangs.getService().getAllies(gangs.getService().getPlayerStats(event.getPlayer().getUniqueId()).getGang());
             AtomicReference<String> ally_members = new AtomicReference<>("");
@@ -61,8 +59,6 @@ public class PlayerChatListener implements Listener {
                 }
             });
             String allymems = ally_members.toString();
-            System.out.println(ally_members);
-            System.out.println(allymems);
             //split the string into an array
             ArrayList<String> tmp= new ArrayList<String>( Arrays.asList(allymems.split(",")));
             String[] str = new String[tmp.size()];
@@ -72,7 +68,6 @@ public class PlayerChatListener implements Listener {
                 str[i] = test;
             }
             ArrayList<String> currentAllies = new ArrayList<>(Arrays.asList(str));
-            System.out.println(str[0]);
             currentAllies.forEach(strings -> {
                 Player ranker = null;
                 if (Bukkit.getPlayerExact(Bukkit.getPlayer(UUID.fromString(strings)).getName()) != null) {
