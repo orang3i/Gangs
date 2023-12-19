@@ -102,6 +102,7 @@ public final class Gangs extends JavaPlugin {
     }
 
     public void testLogger(){
+        getLogger().info("Gangs Plugin Enabled Successfully");
     }
 
     public void initVault(){
@@ -120,8 +121,8 @@ public final class Gangs extends JavaPlugin {
         registerCommands();
         registerEvents();
         connectToDatabase();
-        testLogger();
         initVault();
+        testLogger();
     }
     public GangsService getService() {
         return gangsService;
