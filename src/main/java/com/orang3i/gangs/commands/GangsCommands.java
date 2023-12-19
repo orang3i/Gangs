@@ -47,9 +47,12 @@ public class GangsCommands implements CommandExecutor {
         //START OF RELOAD COMMAND
         if (args[0].equals("reload") && args.length == 1) {
 
-            gangs.reloadConfig();
-            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gangs successfully reloaded</gradient>"));
-
+            if(player.hasPermission("gangs.admin")) {
+                gangs.reloadConfig();
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gangs successfully reloaded</gradient>"));
+            }else{
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you do not have permission to run this command</gradient>"));
+            }
 
         }
         //END OF RELOAD COMMAND
@@ -730,49 +733,60 @@ public class GangsCommands implements CommandExecutor {
         //START OF SET-BASE
         if (args[0].equals("set-base") ) {
 
-            if(args.length == 2) {
-                List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-base-perms");
-                try {
-                    if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
-                        if (!gangs.getService().getBases(gangs.getService().getPlayerStats(player).getGang()).contains(args[1])) {
-                            gangs.getService().setBases(gangs.getService().getPlayerStats(player).getGang(), args[1], player.getWorld().getName(), String.valueOf(player.getLocation().getX()), String.valueOf(player.getLocation().getY()), String.valueOf(player.getLocation().getZ()));
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>successfully set base</gradient>"));
-                        } else {
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>There is already a base with that name</gradient>"));
-                        }
-                    } else {
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to set base</gradient>"));
-                    }
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+            if(player.hasPermission("gangs.tp")) {
 
+                if (args.length == 2) {
+                    List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-base-perms");
+                    try {
+                        if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+                            if (!gangs.getService().getBases(gangs.getService().getPlayerStats(player).getGang()).contains(args[1])) {
+                                gangs.getService().setBases(gangs.getService().getPlayerStats(player).getGang(), args[1], player.getWorld().getName(), String.valueOf(player.getLocation().getX()), String.valueOf(player.getLocation().getY()), String.valueOf(player.getLocation().getZ()));
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>successfully set base</gradient>"));
+                            } else {
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>There is already a base with that name</gradient>"));
+                            }
+                        } else {
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to set base</gradient>"));
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                } else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid or missing required command arguments</gradient>"));
+                }
             }else{
-                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid or missing required command arguments</gradient>"));
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you do not have permission to run this command</gradient>"));
             }
         }
         //END OF SET-BASE
 
         //START OF REMOVE BASE
         if (args[0].equals("remove-base") ) {
-            if (args.length == 2) {
-                List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-base-perms");
-                try {
-                    if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
-                        if (gangs.getService().getBases(gangs.getService().getPlayerStats(player).getGang()).contains(args[1])) {
-                            gangs.getService().removeBases(gangs.getService().getPlayerStats(player).getGang(), args[1]);
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>successfully removed base</gradient>"));
+
+            if(player.hasPermission("gangs.tp")) {
+
+                if (args.length == 2) {
+                    List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks-with-base-perms");
+                    try {
+                        if (ranks.contains(gangs.getService().getPlayerStats(player).getRank())) {
+                            if (gangs.getService().getBases(gangs.getService().getPlayerStats(player).getGang()).contains(args[1])) {
+                                gangs.getService().removeBases(gangs.getService().getPlayerStats(player).getGang(), args[1]);
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>successfully removed base</gradient>"));
+                            } else {
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>There is no base with that name</gradient>"));
+                            }
                         } else {
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>There is no base with that name</gradient>"));
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to remove base</gradient>"));
                         }
-                    } else {
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your rank doesn't allow you to remove base</gradient>"));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                } else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid or missing required command arguments</gradient>"));
                 }
             }else{
-                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid or missing required command arguments</gradient>"));
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you do not have permission to run this command</gradient>"));
             }
         }
         //END OF REMOVE BASE
@@ -780,16 +794,18 @@ public class GangsCommands implements CommandExecutor {
         //START OF TP BASE
         if (args[0].equals("tp-base") ) {
 
-            if(args.length == 2){
-            try {
+            if(player.hasPermission("gangs.tp")) {
 
-                    if(gangs.getService().getBases(gangs.getService().getPlayerStats(player).getGang()).contains(args[1])) {
+                if (args.length == 2) {
+                    try {
 
-                        long cooldownTime = gangs.getConfig().getLong("gangs.base-tp-cooldown"); // Get number of seconds from wherever you want
-                        if (!tpCooldowns.containsKey(sender.getName())) {
+                        if (gangs.getService().getBases(gangs.getService().getPlayerStats(player).getGang()).contains(args[1])) {
+
+                            long cooldownTime = gangs.getConfig().getLong("gangs.base-tp-cooldown"); // Get number of seconds from wherever you want
+                            if (!tpCooldowns.containsKey(sender.getName())) {
                                 tpCooldowns.put(sender.getName(), System.currentTimeMillis());
 
-                        }
+                            }
                             long secondsLeft = ((tpCooldowns.get(sender.getName()) / 1000) + cooldownTime) - (System.currentTimeMillis() / 1000);
                             if (secondsLeft > 0) {
                                 // Still cooling down
@@ -822,15 +838,18 @@ public class GangsCommands implements CommandExecutor {
                             }
 
 
-                    }else {
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>There is no base with that name</gradient>"));
-                    }
+                        } else {
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>There is no base with that name</gradient>"));
+                        }
 
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid or missing required command arguments</gradient>"));
+                }
             }else{
-                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid or missing required command arguments</gradient>"));
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you do not have permission to run this command</gradient>"));
             }
         }
         //END OF TP BASE
@@ -1187,168 +1206,170 @@ public class GangsCommands implements CommandExecutor {
         //END OF GANG PROFILE
 
         if(args[0].equals("admin") ){
-            if(args.length>1) {
-                //START OF SET GANG
-                if (args[1].equals("set-gang") ) {
 
-                    if (args.length >= 4) {
+            if(player.hasPermission("gangs.admin")) {
+                if (args.length > 1) {
+                    //START OF SET GANG
+                    if (args[1].equals("set-gang")) {
 
-                        StringBuilder concat_gang = new StringBuilder();
+                        if (args.length >= 4) {
 
-                        for (int i = 3; i <= args.length - 1; i++) {
-                            concat_gang.append(args[i] + " ");
-                        }
+                            StringBuilder concat_gang = new StringBuilder();
 
-                        String gang = concat_gang.toString().trim();
-
-                        Player p = Bukkit.getPlayer(args[2]);
-
-                        try {
-                            gangs.getService().setPlayerGang(p, gang);
-                            List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks");
-                            gangs.getService().setPlayerRank(p, ranks.get(0));
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + p.getName() + " is now a member of " + gang + "</gradient>"));
-                        gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are now a member of " + gang + "</gradient>"));
-
-
-                    }else {
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
-
-                    }
-                }
-                //END OF SET GANG
-
-                //START OF SET RANK
-                if (args[1].equals("set-rank") ) {
-
-                    if(args.length >= 4) {
-
-                        StringBuilder concat_rank = new StringBuilder();
-
-                        for (int i = 3; i <= args.length - 1; i++) {
-                            concat_rank.append(args[i] + " ");
-                        }
-
-                        String rank = concat_rank.toString().trim();
-
-                        Player p = Bukkit.getPlayer(args[2]);
-
-                        try {
-                            gangs.getService().setPlayerRank(p, rank);
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + p.getName() + " is now a " + rank + "</gradient>"));
-                        gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are now a " + rank + "</gradient>"));
-
-                    }else {
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
-                    }
-                }
-                //END OF SET RANK
-
-
-                //START OF DEPOSIT
-                if (args[1].equals("deposit") ) {
-
-                    if (args.length >= 4) {
-
-                        StringBuilder concat_gang = new StringBuilder();
-
-                        for (int i = 2; i < args.length - 1; i++) {
-                            concat_gang.append(args[i] + " ");
-                        }
-
-                        String gang = concat_gang.toString().trim();
-                        System.out.println(gang);
-
-                        int amount = Math.abs(Math.round(Integer.valueOf(args[args.length - 1])));
-                        try {
-                            int newBalance = Integer.parseInt(gangs.getService().getServerStats(gang).getBalance()) + amount;
-                            gangs.getService().setBalance(gang, Integer.toString(newBalance));
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>deposited " + amount + "$</gradient>"));
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance " + (gangs.getService().getServerStats(gang).getBalance()) + "$</gradient>"));
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                    }else {
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
-                    }
-                }
-                //END OF DEPOSIT
-
-
-                //START OF WITHDRAW
-                if (args[1].equals("withdraw") ) {
-
-                    if (args.length >= 4) {
-                        StringBuilder concat_gang = new StringBuilder();
-
-                        for (int i = 2; i < args.length - 1; i++) {
-                            concat_gang.append(args[i] + " ");
-                        }
-
-                        String gang = concat_gang.toString().trim();
-
-                        int amount = Math.abs(Math.round(Integer.valueOf(args[args.length - 1])));
-
-
-                        try {
-                            if (amount <= Integer.valueOf(gangs.getService().getServerStats(gang).getBalance())) {
-                                int newBalance = Integer.parseInt(gangs.getService().getServerStats(gang).getBalance()) - amount;
-                                gangs.getService().setBalance(gang, Integer.toString(newBalance));
-                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>withdrawn " + amount + "$</gradient>"));
-                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance " + (gangs.getService().getServerStats(gang).getBalance()) + "$</gradient>"));
-                            } else {
-                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you cannot withdraw more than your gang balance</gradient>"));
+                            for (int i = 3; i <= args.length - 1; i++) {
+                                concat_gang.append(args[i] + " ");
                             }
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }else {
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
-                    }
-                }
-                //END OF WITHDRAW
 
-                //START OF PLAYER PROFILE
-                if (args[1].equals("profile-player") ) {
+                            String gang = concat_gang.toString().trim();
 
-                    if(args.length == 3) {
-
-                        UUID p = null;
-                        try {
-                            p = gangs.getService().getPlayerUUID(args[2]);
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                        if (p != null) {
+                            Player p = Bukkit.getPlayer(args[2]);
 
                             try {
-                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Player Name: " + args[2] + "\nPlayer Gang: " + gangs.getService().getPlayerStats(p).getGang() + "\nPlayer Rank: " + gangs.getService().getPlayerStats(p).getRank() + "\nPlayer Balance: " + gangs.getEconomy().getBalance(Bukkit.getOfflinePlayer(p)) + "</gradient>"));
+                                gangs.getService().setPlayerGang(p, gang);
+                                List<String> ranks = (List<String>) gangs.getConfig().getList("gangs.ranks");
+                                gangs.getService().setPlayerRank(p, ranks.get(0));
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
-                        }else{
+
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + p.getName() + " is now a member of " + gang + "</gradient>"));
+                            gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are now a member of " + gang + "</gradient>"));
+
+
+                        } else {
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+
+                        }
+                    }
+                    //END OF SET GANG
+
+                    //START OF SET RANK
+                    if (args[1].equals("set-rank")) {
+
+                        if (args.length >= 4) {
+
+                            StringBuilder concat_rank = new StringBuilder();
+
+                            for (int i = 3; i <= args.length - 1; i++) {
+                                concat_rank.append(args[i] + " ");
+                            }
+
+                            String rank = concat_rank.toString().trim();
+
+                            Player p = Bukkit.getPlayer(args[2]);
+
+                            try {
+                                gangs.getService().setPlayerRank(p, rank);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + p.getName() + " is now a " + rank + "</gradient>"));
+                            gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are now a " + rank + "</gradient>"));
+
+                        } else {
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                        }
+                    }
+                    //END OF SET RANK
+
+
+                    //START OF DEPOSIT
+                    if (args[1].equals("deposit")) {
+
+                        if (args.length >= 4) {
+
+                            StringBuilder concat_gang = new StringBuilder();
+
+                            for (int i = 2; i < args.length - 1; i++) {
+                                concat_gang.append(args[i] + " ");
+                            }
+
+                            String gang = concat_gang.toString().trim();
+                            System.out.println(gang);
+
+                            int amount = Math.abs(Math.round(Integer.valueOf(args[args.length - 1])));
+                            try {
+                                int newBalance = Integer.parseInt(gangs.getService().getServerStats(gang).getBalance()) + amount;
+                                gangs.getService().setBalance(gang, Integer.toString(newBalance));
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>deposited " + amount + "$</gradient>"));
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance " + (gangs.getService().getServerStats(gang).getBalance()) + "$</gradient>"));
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                        } else {
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                        }
+                    }
+                    //END OF DEPOSIT
+
+
+                    //START OF WITHDRAW
+                    if (args[1].equals("withdraw")) {
+
+                        if (args.length >= 4) {
+                            StringBuilder concat_gang = new StringBuilder();
+
+                            for (int i = 2; i < args.length - 1; i++) {
+                                concat_gang.append(args[i] + " ");
+                            }
+
+                            String gang = concat_gang.toString().trim();
+
+                            int amount = Math.abs(Math.round(Integer.valueOf(args[args.length - 1])));
+
+
+                            try {
+                                if (amount <= Integer.valueOf(gangs.getService().getServerStats(gang).getBalance())) {
+                                    int newBalance = Integer.parseInt(gangs.getService().getServerStats(gang).getBalance()) - amount;
+                                    gangs.getService().setBalance(gang, Integer.toString(newBalance));
+                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>withdrawn " + amount + "$</gradient>"));
+                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance " + (gangs.getService().getServerStats(gang).getBalance()) + "$</gradient>"));
+                                } else {
+                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you cannot withdraw more than your gang balance</gradient>"));
+                                }
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                        }
+                    }
+                    //END OF WITHDRAW
+
+                    //START OF PLAYER PROFILE
+                    if (args[1].equals("profile-player")) {
+
+                        if (args.length == 3) {
+
+                            UUID p = null;
+                            try {
+                                p = gangs.getService().getPlayerUUID(args[2]);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                            if (p != null) {
+
+                                try {
+                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Player Name: " + args[2] + "\nPlayer Gang: " + gangs.getService().getPlayerStats(p).getGang() + "\nPlayer Rank: " + gangs.getService().getPlayerStats(p).getRank() + "\nPlayer Balance: " + gangs.getEconomy().getBalance(Bukkit.getOfflinePlayer(p)) + "</gradient>"));
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
                                 gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid player name</gradient>"));
                             }
-                    }else{
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid or missing required command arguments</gradient>"));
+                        } else {
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid or missing required command arguments</gradient>"));
+                        }
                     }
-                }
-                //END OF PLAYER PROFILE
+                    //END OF PLAYER PROFILE
 
 
-                //START OF GANG PROFILE
-                if (args[1].equals("profile-gang")) {
+                    //START OF GANG PROFILE
+                    if (args[1].equals("profile-gang")) {
 
-                    if(args.length >= 3) {
+                        if (args.length >= 3) {
 
                             StringBuilder concat_gang = new StringBuilder();
 
@@ -1358,131 +1379,134 @@ public class GangsCommands implements CommandExecutor {
 
                             String gang = concat_gang.toString().trim();
 
-                        try {
-                            if (gangs.getService().getGangsList().contains(gang)) {
+                            try {
+                                if (gangs.getService().getGangsList().contains(gang)) {
 
-                            ArrayList<String> gangsArray = new ArrayList<>();
+                                    ArrayList<String> gangsArray = new ArrayList<>();
 
-                            Gangs gangs = Gangs.getPlugin();
-                            QueryBuilder<PlayerStats, String> qb = gangs.getService().getPlayerStatsDao().queryBuilder();
-                            // select 2 aggregate functions as the return
-                            qb.groupBy("uuid");
-                            // the results will contain 2 string values for the min and max
-                            GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
-                            // page through the results
-                            List<String[]> results = rawResults.getResults();
-                            System.out.print("[");
-                            results.forEach(r -> {
-                                System.out.print("[");
-                                for (int i = 0; i < r.length - 1; i++) {
-                                    System.out.print(r[i] + ",");
+                                    Gangs gangs = Gangs.getPlugin();
+                                    QueryBuilder<PlayerStats, String> qb = gangs.getService().getPlayerStatsDao().queryBuilder();
+                                    // select 2 aggregate functions as the return
+                                    qb.groupBy("uuid");
+                                    // the results will contain 2 string values for the min and max
+                                    GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
+                                    // page through the results
+                                    List<String[]> results = rawResults.getResults();
+                                    System.out.print("[");
+                                    results.forEach(r -> {
+                                        System.out.print("[");
+                                        for (int i = 0; i < r.length - 1; i++) {
+                                            System.out.print(r[i] + ",");
+                                        }
+                                        System.out.print(r[r.length - 1] + "],");
+
+                                    });
+                                    System.out.println("]");
+
+                                    ArrayList<String> pl = new ArrayList<>();
+
+                                    AtomicInteger count = new AtomicInteger();
+
+                                    results.forEach(r -> {
+
+                                        if (r[2].equals(gang)) {
+                                            pl.add(r[1]);
+                                            count.getAndIncrement();
+                                        }
+
+                                    });
+
+
+                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Gang Name: " + gang + "\nMember Count: " + count.get() + "\nGang Balance: " + gangs.getService().getServerStats(gang).getBalance() + "</gradient>"));
+                                } else {
+                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid gang name</gradient>"));
                                 }
-                                System.out.print(r[r.length - 1] + "],");
-
-                            });
-                            System.out.println("]");
-
-                            ArrayList<String> pl = new ArrayList<>();
-
-                            AtomicInteger count = new AtomicInteger();
-
-                            results.forEach(r -> {
-
-                                if (r[2].equals(gang)) {
-                                    pl.add(r[1]);
-                                    count.getAndIncrement();
-                                }
-
-                            });
-
-
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Gang Name: " + gang + "\nMember Count: " + count.get() + "\nGang Balance: " + gangs.getService().getServerStats(gang).getBalance() + "</gradient>"));
-                        }else {
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid gang name</gradient>"));
-                        }
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }else{
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
-                    }
-                }
-                //END OF GANG PROFILE
-
-
-                //START OF RANK LIST
-                if (args[1].equals("rank-list") ) {
-
-                    if(args.length >= 4) {
-                        try {
-                            StringBuilder concat_gang = new StringBuilder();
-
-                            for (int i = 3; i <= args.length - 1; i++) {
-                                concat_gang.append(args[i] + " ");
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
                             }
-
-                            String gang = concat_gang.toString().trim();
-
-                            String rank = args[2];
-                            ArrayList<String> gangsArray = new ArrayList<>();
-
-                            Gangs gangs = Gangs.getPlugin();
-                            QueryBuilder<PlayerStats, String> qb = gangs.getService().getPlayerStatsDao().queryBuilder();
-                            // select 2 aggregate functions as the return
-                            qb.groupBy("uuid");
-                            // the results will contain 2 string values for the min and max
-                            GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
-                            // page through the results
-                            List<String[]> results = rawResults.getResults();
-                            System.out.print("[");
-                            results.forEach(r -> {
-                                System.out.print("[");
-                                for (int i = 0; i < r.length - 1; i++) {
-                                    System.out.print(r[i] + ",");
-                                }
-                                System.out.print(r[r.length - 1] + "],");
-
-                            });
-                            System.out.println("]");
-
-                            ArrayList<String> pl = new ArrayList<>();
-
-                            AtomicInteger count = new AtomicInteger();
-
-                            results.forEach(r -> {
-
-                                if (r[2].equals(gang) && r[3].equals(rank)) {
-                                    pl.add(r[1]);
-                                    count.getAndIncrement();
-                                }
-
-                            });
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Total Members of [" + rank + "]: " + count.get() + "</gradient>"));
-
-                            StringBuffer buff = new StringBuffer();
-
-                            buff.append("Members: ");
-                            for (int i = 0; i < pl.size(); i++) {
-                                buff.append(pl.get(i));
-                                buff.append(",");
-                            }
-                            buff.deleteCharAt(buff.length() - 1);
-                            String mems = buff.toString();
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + mems + "</gradient>"));
-
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
+                        } else {
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
                         }
-                    }else {
-                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
                     }
-                }
-                //END OF RANK LIST
-            }else {
-                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                    //END OF GANG PROFILE
 
+
+                    //START OF RANK LIST
+                    if (args[1].equals("rank-list")) {
+
+                        if (args.length >= 4) {
+                            try {
+                                StringBuilder concat_gang = new StringBuilder();
+
+                                for (int i = 3; i <= args.length - 1; i++) {
+                                    concat_gang.append(args[i] + " ");
+                                }
+
+                                String gang = concat_gang.toString().trim();
+
+                                String rank = args[2];
+                                ArrayList<String> gangsArray = new ArrayList<>();
+
+                                Gangs gangs = Gangs.getPlugin();
+                                QueryBuilder<PlayerStats, String> qb = gangs.getService().getPlayerStatsDao().queryBuilder();
+                                // select 2 aggregate functions as the return
+                                qb.groupBy("uuid");
+                                // the results will contain 2 string values for the min and max
+                                GenericRawResults<String[]> rawResults = gangs.getService().getServerStatsDao().queryRaw(qb.prepareStatementString());
+                                // page through the results
+                                List<String[]> results = rawResults.getResults();
+                                System.out.print("[");
+                                results.forEach(r -> {
+                                    System.out.print("[");
+                                    for (int i = 0; i < r.length - 1; i++) {
+                                        System.out.print(r[i] + ",");
+                                    }
+                                    System.out.print(r[r.length - 1] + "],");
+
+                                });
+                                System.out.println("]");
+
+                                ArrayList<String> pl = new ArrayList<>();
+
+                                AtomicInteger count = new AtomicInteger();
+
+                                results.forEach(r -> {
+
+                                    if (r[2].equals(gang) && r[3].equals(rank)) {
+                                        pl.add(r[1]);
+                                        count.getAndIncrement();
+                                    }
+
+                                });
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Total Members of [" + rank + "]: " + count.get() + "</gradient>"));
+
+                                StringBuffer buff = new StringBuffer();
+
+                                buff.append("Members: ");
+                                for (int i = 0; i < pl.size(); i++) {
+                                    buff.append(pl.get(i));
+                                    buff.append(",");
+                                }
+                                buff.deleteCharAt(buff.length() - 1);
+                                String mems = buff.toString();
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + mems + "</gradient>"));
+
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                        }
+                    }
+                    //END OF RANK LIST
+
+                } else {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+
+                }
+            }else{
+                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you do not have permission to run this command</gradient>"));
             }
-
         }
 
         return true;

@@ -10,3 +10,9 @@ commands:
   gangs:
   adventurecommand:
   test-economy:
+permissions:
+  gangs.tp:
+    default: true
+  gangs.admin:
+    default: op
+
