@@ -1,5 +1,1 @@
-( https://youtube.com/playlist?list=PLfu_Bpi_zcDNEKmR82hnbv9UxQ16nUBF7&si=h1asv9F5CGY-90Q_ ) for sql stuff (ormlite)
-
-1.create config
-2.ask for sql and mysql
-3.make way to store same vars
+Make Spigot Page And Do Description!
