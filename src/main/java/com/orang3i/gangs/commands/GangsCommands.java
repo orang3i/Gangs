@@ -87,7 +87,7 @@ public class GangsCommands implements CommandExecutor {
                                 if (!gangs.getService().getPlayerStats(player).getGang().equals(gangs.getService().getPlayerStats(invitee).getGang())) {
                                     gangs.adventure().player(invitee).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are invited to join " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
 
-                                    gangs.adventure().player(invitee).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendinvite " + args[1] + " " + gangs.getService().getPlayerStats(player).getGang() + " " + player.getName())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to join " + gangs.getService().getPlayerStats(player).getGang()))));
+                                    gangs.adventure().player(invitee).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendinvite " + args[1] + " " + gangs.getService().getPlayerStats(player).getGang() + " " + player.getName()+" "+gangs.getService().adventureUUIDGen())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to join " + gangs.getService().getPlayerStats(player).getGang()))));
 
                                     gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>successfully invited " + args[1] + "</gradient>"));
                                 } else {
@@ -459,7 +459,7 @@ public class GangsCommands implements CommandExecutor {
 
                                             int lenganga = gang_concacted.length();
                                             int lengangb = gangs.getService().getPlayerStats(player).getGang().length();
-                                            gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyinvite $%A" + gang_concacted + "$%A $%B" + gangs.getService().getPlayerStats(player).getGang() + "$%B " + player.getName() + " " + p.getName())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to join " + gangs.getService().getPlayerStats(player).getGang()))));
+                                            gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyinvite $%A" + gang_concacted + "$%A $%B" + gangs.getService().getPlayerStats(player).getGang() + "$%B " + player.getName() + " " + p.getName()+" "+gangs.getService().adventureUUIDGen())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to join " + gangs.getService().getPlayerStats(player).getGang()))));
                                             count.addAndGet(1);
                                         }
                                     } catch (SQLException e) {
@@ -608,14 +608,14 @@ public class GangsCommands implements CommandExecutor {
                                                 gangs.adventure().player(p.getPlayer()).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is requested to turn off friendly fire with " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
                                                 int lenganga = gang_concacted.length();
                                                 int lengangb = gangs.getService().getPlayerStats(player).getGang().length();
-                                                gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyfriendlyinvite $%A" + gang_concacted + "$%A $%B" + gangs.getService().getPlayerStats(player).getGang() + "$%B " + player.getName() + " " + p.getName() + " false")).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to accept"))));
+                                                gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyfriendlyinvite $%A" + gang_concacted + "$%A $%B" + gangs.getService().getPlayerStats(player).getGang() + "$%B " + player.getName() + " " + p.getName() + " false"+" "+gangs.getService().adventureUUIDGen())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to accept"))));
                                                 count.addAndGet(1);
                                             } else {
                                                 if (args[args.length - 1].equals("true")) {
                                                     gangs.adventure().player(p.getPlayer()).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>your gang is requested to turn on friendly fire with " + gangs.getService().getPlayerStats(player).getGang() + "</gradient>"));
                                                     int lenganga = gang_concacted.length();
                                                     int lengangb = gangs.getService().getPlayerStats(player).getGang().length();
-                                                    gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyfriendlyinvite $%A" + gang_concacted + "$%A $%B" + gangs.getService().getPlayerStats(player).getGang() + "$%B " + player.getName() + " " + p.getName() + " true")).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to accept"))));
+                                                    gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand sendallyfriendlyinvite $%A" + gang_concacted + "$%A $%B" + gangs.getService().getPlayerStats(player).getGang() + "$%B " + player.getName() + " " + p.getName() + " true"+" "+gangs.getService().adventureUUIDGen())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>click me to accept"))));
                                                     count.addAndGet(1);
                                                 }
                                             }
@@ -862,7 +862,7 @@ public class GangsCommands implements CommandExecutor {
 
                             gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>the gang members have been summoned! </gradient>"));
 
-                            gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand summon " + p.getName() + " " + player.getName())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>[click me to tp]"))));
+                            gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand summon " + p.getName() + " " + player.getName()+" "+gangs.getService().adventureUUIDGen())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>[click me to tp]"))));
 
                             gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>successfully summoned gang members</gradient>"));
                         }
@@ -921,7 +921,7 @@ public class GangsCommands implements CommandExecutor {
 
                                                 gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Your gang is challenged by " + gangs.getService().getPlayerStats(player).getGang() + " accept to summon your members to warzone</gradient>"));
 
-                                                gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand challenge $%A" + gang + "$%A $%B" + gangs.getService().getPlayerStats(player).getGang() + "$%B $%C" + player.getName() + "$%C")).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>[click me to tp]"))));
+                                                gangs.adventure().player(p).sendMessage((MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c><bold>[ACCEPT]</gradient>")).clickEvent(runCommand("/adventurecommand challenge $%A" + gang + "$%A $%B" + gangs.getService().getPlayerStats(player).getGang() + "$%B $%C" + player.getName() + "$%C"+" "+gangs.getService().adventureUUIDGen())).hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>[click me to tp]"))));
 
                                                 gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>challenge sent successfully, both gang members will receive tp invite when challenge accepted</gradient>"));
 

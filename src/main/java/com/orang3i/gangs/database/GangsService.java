@@ -25,6 +25,8 @@ public class GangsService {
     private final Dao<PlayerStats,String> playerStatsDao;
     private final Dao<ServerStats,String> serverStatsDao;
 
+    public static ArrayList<String> adventureUUIDList = new ArrayList<>();
+
 
     public GangsService() throws SQLException {
 
@@ -475,7 +477,14 @@ public void setBalance(String gang,String balance)throws SQLException{
         return gangsArray;
     }
 
+    public String adventureUUIDGen(){
 
+        String adventureUUIDGenString = UUID.randomUUID().toString();
+
+        adventureUUIDList.add(adventureUUIDGenString);
+
+        return adventureUUIDGenString;
+    }
 
 
 }
