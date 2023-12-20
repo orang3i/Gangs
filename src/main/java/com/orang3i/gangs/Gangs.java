@@ -76,10 +76,6 @@ public final class Gangs extends JavaPlugin {
 
 
     public void registerCommands(){
-        getCommand("tester").setExecutor(new Tester(this));
-        getCommand("setgang").setExecutor(new SetGang(this));
-        getCommand("getgang").setExecutor(new GetGang(this));
-        getCommand("getgangmembers").setExecutor(new GetGangMembers(this));
         getCommand("gangs").setExecutor(new GangsCommands(this));
         getCommand("gangs").setTabCompleter(new GangsTabCompleter((this)));
         getCommand("adventurecommand").setExecutor(new AdventureCommand(this));
@@ -96,19 +92,32 @@ public final class Gangs extends JavaPlugin {
         try {
             gangsService = new GangsService();
         } catch (SQLException e) {
-            e.printStackTrace();
+            getLogger().severe(String.format("Cannot Connect To Database!", getDescription().getName()));
+            getLogger().severe(e.getStackTrace().toString());
             Bukkit.getPluginManager().disablePlugin(this);
         }
     }
 
     public void testLogger(){
-        getLogger().info("Gangs Plugin Enabled Successfully");
+        String startup = """
+                  
+                  ____   ____  ____    ____  _____     ____  _      __ __   ____  ____  ____         ___  ____    ____  ____   _        ___  ___  \s
+                 /    | /    ||    \\  /    |/ ___/    |    \\| |    |  |  | /    ||    ||    \\       /  _]|    \\  /    ||    \\ | |      /  _]|   \\ \s
+                |   __||  o  ||  _  ||   __(   \\_     |  o  ) |    |  |  ||   __| |  | |  _  |     /  [_ |  _  ||  o  ||  o  )| |     /  [_ |    \\\s
+                |  |  ||     ||  |  ||  |  |\\__  |    |   _/| |___ |  |  ||  |  | |  | |  |  |    |    _]|  |  ||     ||     || |___ |    _]|  D  |
+                |  |_ ||  _  ||  |  ||  |_ |/  \\ |    |  |  |     ||  :  ||  |_ | |  | |  |  |    |   [_ |  |  ||  _  ||  O  ||     ||   [_ |     |
+                |     ||  |  ||  |  ||     |\\    |    |  |  |     ||     ||     | |  | |  |  |    |     ||  |  ||  |  ||     ||     ||     ||     |
+                |___,_||__|__||__|__||___,_| \\___|    |__|  |_____| \\__,_||___,_||____||__|__|    |_____||__|__||__|__||_____||_____||_____||_____|""";
+
+
+        getLogger().info(startup);
     }
 
     public void initVault(){
         if (!setupEconomy() ) {
-            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
-            getServer().getPluginManager().disablePlugin(this);
+            getLogger().severe(String.format("Vault dependency not found some commands may produce error!", getDescription().getName()));
+            //getServer().getPluginManager().disablePlugin(this);
+            JoinListener.vaultExists = false;
             return;
         }
         setupPermissions();
@@ -156,36 +165,6 @@ public final class Gangs extends JavaPlugin {
         return perms != null;
     }
 
-    public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        if(!(sender instanceof Player)) {
-            getLogger().info("Only players are supported for this Example Plugin, but you should not do this!!!");
-            return true;
-        }
-
-        Player player = (Player) sender;
-
-        if(command.getLabel().equals("test-economy")) {
-            // Lets give the player 1.05 currency (note that SOME economic plugins require rounding!)
-            sender.sendMessage(String.format("You have %s", econ.format(econ.getBalance(player.getName()))));
-            EconomyResponse r = econ.depositPlayer(player, 1.05);
-            if(r.transactionSuccess()) {
-                sender.sendMessage(String.format("You were given %s and now have %s", econ.format(r.amount), econ.format(r.balance)));
-            } else {
-                sender.sendMessage(String.format("An error occured: %s", r.errorMessage));
-            }
-            return true;
-        } else if(command.getLabel().equals("test-permission")) {
-            // leets test if user has the node "example.plugin.awesome" to determine if they are awesome or just suck
-            if(perms.has(player, "example.plugin.awesome")) {
-                sender.sendMessage("You are awesome!");
-            } else {
-                sender.sendMessage("You suck!");
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public static Economy getEconomy() {
         return econ;

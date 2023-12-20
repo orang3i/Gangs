@@ -11,17 +11,17 @@ database:
 
 
 gangs:
-    ranks: [rookie,rookie1,rookie2,leader]
-    ranks-with-invite-perms: [rookie,rookie1,rookie2,leader]
-    ranks-with-rank-perms: [rookie,rookie1,rookie2,leader]
-    ranks-with-kick-perms: [rookie,rookie1,rookie2,leader]
-    ranks-with-disband-perms: [rookie,rookie1,rookie2,leader]
-    ranks-with-ally-perms: [rookie,rookie1,rookie2,leader]
-    ranks-with-vault-perms: [rookie,rookie1,rookie2,leader]
-    ranks-with-friendly-fire-perms: [rookie,rookie1,rookie2,leader]
-    ranks-with-base-perms: [rookie,rookie1,rookie2,leader]
-    ranks-with-summon-perms: [rookie,rookie1,rookie2,leader]
-    ranks-with-challenge-perms: [rookie,rookie1,rookie2,leader]
+    ranks: [rookie,associate,captain,leader] #left to right hierarchy
+    ranks-with-invite-perms: [captain,leader]
+    ranks-with-rank-perms: [captain,leader]
+    ranks-with-kick-perms: [captain,leader]
+    ranks-with-disband-perms: [leader]
+    ranks-with-ally-perms: [leader]
+    ranks-with-vault-perms: [rookie,associate,captain,leader]
+    ranks-with-friendly-fire-perms: [leader]
+    ranks-with-base-perms: [leader]
+    ranks-with-summon-perms: [leader]
+    ranks-with-challenge-perms: [leader]
     force-friendly-fire: false
     force-friendly-fire-disable : false
     friendly-fire-gang: true
