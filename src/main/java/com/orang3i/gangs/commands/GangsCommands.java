@@ -16,6 +16,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,15 +42,31 @@ public class GangsCommands implements CommandExecutor {
     public static HashMap<String, Long> inviteCooldowns = new HashMap<String, Long>();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Player player = (Player) sender;
+
+
+
+        Player player;
+
+        if(sender instanceof Player){
+            player = (Player) sender;
+        } else {
+            player = null;
+        }
+
+
         Dao<PlayerStats, String> dao = gangs.getService().getPlayerStatsDao();
 
         //START OF RELOAD COMMAND
         if (args[0].equals("reload") && args.length == 1) {
 
-            if(player.hasPermission("gangs.admin")) {
+            if(sender instanceof ConsoleCommandSender ||player.hasPermission("gangs.admin")) {
                 gangs.reloadConfig();
-                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gangs successfully reloaded</gradient>"));
+
+                if(sender instanceof Player) {
+                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>gangs successfully reloaded</gradient>"));
+                }else {
+                    Bukkit.getConsoleSender().sendMessage("gangs reloaded successfully");
+                }
             }else{
                 gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you do not have permission to run this command</gradient>"));
             }
@@ -1191,13 +1208,12 @@ public class GangsCommands implements CommandExecutor {
 
         if(args[0].equals("admin") ){
 
-            if(player.hasPermission("gangs.admin")) {
+            if( sender instanceof ConsoleCommandSender || player.hasPermission("gangs.admin")) {
                 if (args.length > 1) {
                     //START OF SET GANG
                     if (args[1].equals("set-gang")) {
 
                         if (args.length >= 4) {
-
                             StringBuilder concat_gang = new StringBuilder();
 
                             for (int i = 3; i <= args.length - 1; i++) {
@@ -1215,14 +1231,19 @@ public class GangsCommands implements CommandExecutor {
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
+                            if(sender instanceof Player) {
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + p.getName() + " is now a member of " + gang + "</gradient>"));
+                            }else{
 
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + p.getName() + " is now a member of " + gang + "</gradient>"));
+                                Bukkit.getServer().getConsoleSender().sendMessage(p.getName() + " is now a member of " + gang);
+                            }
                             gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are now a member of " + gang + "</gradient>"));
-
-
                         } else {
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
-
+                            if(sender instanceof Player) {
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                            }else {
+                                Bukkit.getServer().getConsoleSender().sendMessage("missing required command arguments");
+                            }
                         }
                     }
                     //END OF SET GANG
@@ -1242,17 +1263,28 @@ public class GangsCommands implements CommandExecutor {
 
                             Player p = Bukkit.getPlayer(args[2]);
 
+
                             try {
-                                gangs.getService().setPlayerRank(p, rank);
+                                gangs.getService().setPlayerRank(gangs.getService().getPlayerUUID(args[2]), rank);
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
 
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + p.getName() + " is now a " + rank + "</gradient>"));
-                            gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are now a " + rank + "</gradient>"));
+                            if(sender instanceof Player) {
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + args[2] + " is now a " + rank + "</gradient>"));
+                            }else {
+                                Bukkit.getServer().getConsoleSender().sendMessage(args[2] + " is now a " + rank);
+                            }
 
+                            if(p!=null) {
+                                gangs.adventure().player(p).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you are now a " + rank + "</gradient>"));
+                            }
                         } else {
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                            if(sender instanceof Player) {
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                            }else {
+                                Bukkit.getServer().getConsoleSender().sendMessage("missing required command arguments");
+                            }
                         }
                     }
                     //END OF SET RANK
@@ -1275,14 +1307,25 @@ public class GangsCommands implements CommandExecutor {
                             try {
                                 int newBalance = Integer.parseInt(gangs.getService().getServerStats(gang).getBalance()) + amount;
                                 gangs.getService().setBalance(gang, Integer.toString(newBalance));
-                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>deposited " + amount + "$</gradient>"));
-                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance " + (gangs.getService().getServerStats(gang).getBalance()) + "$</gradient>"));
-                            } catch (SQLException e) {
+
+                                if(sender instanceof Player) {
+
+                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>deposited " + amount + "$</gradient>"));
+                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance " + (gangs.getService().getServerStats(gang).getBalance()) + "$</gradient>"));
+                                }else {
+                                    Bukkit.getConsoleSender().sendMessage("deposited " + amount);
+                                    Bukkit.getConsoleSender().sendMessage("new balance " + (gangs.getService().getServerStats(gang).getBalance()));
+                                }
+                                } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
 
                         } else {
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                            if(sender instanceof Player) {
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                            }else {
+                                Bukkit.getServer().getConsoleSender().sendMessage("missing required command arguments");
+                            }
                         }
                     }
                     //END OF DEPOSIT
@@ -1307,16 +1350,32 @@ public class GangsCommands implements CommandExecutor {
                                 if (amount <= Integer.valueOf(gangs.getService().getServerStats(gang).getBalance())) {
                                     int newBalance = Integer.parseInt(gangs.getService().getServerStats(gang).getBalance()) - amount;
                                     gangs.getService().setBalance(gang, Integer.toString(newBalance));
+
+                                    if(sender instanceof Player) {
                                     gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>withdrawn " + amount + "$</gradient>"));
                                     gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>new balance " + (gangs.getService().getServerStats(gang).getBalance()) + "$</gradient>"));
+                                }else {
+                                        Bukkit.getConsoleSender().sendMessage("withdrawn" + amount);
+                                        Bukkit.getConsoleSender().sendMessage("new balance " + (gangs.getService().getServerStats(gang).getBalance()));
+                                    }
+
                                 } else {
-                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you cannot withdraw more than your gang balance</gradient>"));
+                                    if(sender instanceof Player) {
+                                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>you cannot withdraw more than your gang balance</gradient>"));
+                                    }else {
+                                        Bukkit.getConsoleSender().sendMessage("you cannot withdraw more than your gang balance");
+                                    }
+
                                 }
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
                         } else {
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                            if(sender instanceof Player) {
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                            }else {
+                                Bukkit.getConsoleSender().sendMessage("missing required command arguments");
+                            }
                         }
                     }
                     //END OF WITHDRAW
@@ -1335,15 +1394,30 @@ public class GangsCommands implements CommandExecutor {
                             if (p != null) {
 
                                 try {
-                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Player Name: " + args[2] + "\nPlayer Gang: " + gangs.getService().getPlayerStats(p).getGang() + "\nPlayer Rank: " + gangs.getService().getPlayerStats(p).getRank() + "\nPlayer Balance: " + gangs.getEconomy().getBalance(Bukkit.getOfflinePlayer(p)) + "</gradient>"));
+
+                                    if(sender instanceof Player) {
+                                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Player Name: " + args[2] + "\nPlayer Gang: " + gangs.getService().getPlayerStats(p).getGang() + "\nPlayer Rank: " + gangs.getService().getPlayerStats(p).getRank() + "\nPlayer Balance: " + gangs.getEconomy().getBalance(Bukkit.getOfflinePlayer(p)) + "</gradient>"));
+                                    }else {
+                                        Bukkit.getConsoleSender().sendMessage("Player Name: " + args[2] + "\nPlayer Gang: " + gangs.getService().getPlayerStats(p).getGang() + "\nPlayer Rank: " + gangs.getService().getPlayerStats(p).getRank() + "\nPlayer Balance: " + gangs.getEconomy().getBalance(Bukkit.getOfflinePlayer(p)));
+                                    }
                                 } catch (SQLException e) {
                                     throw new RuntimeException(e);
                                 }
                             } else {
-                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid player name</gradient>"));
+
+                                if(sender instanceof Player) {
+                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid player name</gradient>"));
+                                }else {
+                                    Bukkit.getConsoleSender().sendMessage("invalid player name");
+                                }
                             }
                         } else {
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid or missing required command arguments</gradient>"));
+
+                            if(sender instanceof Player) {
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid or missing required command arguments</gradient>"));
+                            }else {
+                                Bukkit.getConsoleSender().sendMessage("invalid or missing required command arguments");
+                            }
                         }
                     }
                     //END OF PLAYER PROFILE
@@ -1394,16 +1468,30 @@ public class GangsCommands implements CommandExecutor {
 
                                     });
 
-
-                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Gang Name: " + gang + "\nMember Count: " + count.get() + "\nGang Balance: " + gangs.getService().getServerStats(gang).getBalance() + "</gradient>"));
+                                    if(sender instanceof Player) {
+                                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Gang Name: " + gang + "\nMember Count: " + count.get() + "\nGang Balance: " + gangs.getService().getServerStats(gang).getBalance() + "</gradient>"));
+                                    }else {
+                                        Bukkit.getConsoleSender().sendMessage("Gang Name: " + gang + "\nMember Count: " + count.get() + "\nGang Balance: " + gangs.getService().getServerStats(gang).getBalance());
+                                    }
                                 } else {
-                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid gang name</gradient>"));
+
+                                    if(sender instanceof Player) {
+                                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>invalid gang name</gradient>"));
+                                    }else {
+                                        Bukkit.getConsoleSender().sendMessage("invalid gang name");
+                                    }
+
                                 }
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
                         } else {
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+
+                            if(sender instanceof Player) {
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                            }else {
+                                Bukkit.getConsoleSender().sendMessage("missing required command arguments");
+                            }
                         }
                     }
                     //END OF GANG PROFILE
@@ -1451,7 +1539,13 @@ public class GangsCommands implements CommandExecutor {
                                     }
 
                                 });
-                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Total Members of [" + rank + "]: " + count.get() + "</gradient>"));
+
+
+                                if(sender instanceof Player) {
+                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>Total Members of [" + rank + "]: " + count.get() + "</gradient>"));
+                                }else {
+                                    Bukkit.getConsoleSender().sendMessage("Total Members of [" + rank + "]: " + count.get());
+                                }
 
                                 StringBuffer buff = new StringBuffer();
 
@@ -1462,19 +1556,33 @@ public class GangsCommands implements CommandExecutor {
                                 }
                                 buff.deleteCharAt(buff.length() - 1);
                                 String mems = buff.toString();
-                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + mems + "</gradient>"));
-
+                                if(sender instanceof Player) {
+                                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>" + mems + "</gradient>"));
+                                }else {
+                                    Bukkit.getConsoleSender().sendMessage(mems);
+                                }
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
                         } else {
-                            gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+
+                            if(sender instanceof Player) {
+                                gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                            }else {
+                                Bukkit.getConsoleSender().sendMessage("missing required command arguments");
+                            }
+
                         }
                     }
                     //END OF RANK LIST
 
                 } else {
-                    gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+
+                    if(sender instanceof Player) {
+                        gangs.adventure().player(player).sendMessage(MiniMessage.miniMessage().deserialize("<gradient:#8e28ed:#f52c2c>missing required command arguments</gradient>"));
+                    }else {
+                        Bukkit.getConsoleSender().sendMessage("missing required command arguments");
+                    }
 
                 }
             }else{
