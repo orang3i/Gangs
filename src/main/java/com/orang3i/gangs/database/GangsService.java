@@ -39,7 +39,7 @@ public class GangsService {
         String port = gangs.getConfig().getString("database.port");
         String dbname = gangs.getConfig().getString("database.db-name");
         if(dbType.equals("sqlite")){
-          connectionSource   = new JdbcConnectionSource("jdbc:sqlite:"+gangs.getDataFolder()+"/"+"\\gangs.db");
+          connectionSource   = new JdbcConnectionSource("jdbc:sqlite:"+gangs.getDataFolder()+"/"+"gangs.db");
         }
         if(dbType.equals("mysql")){
             //mysql://<username>:<password>@<host>:<port>/<db_name>
