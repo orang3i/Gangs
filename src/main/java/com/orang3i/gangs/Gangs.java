@@ -6,12 +6,12 @@ public final class Gangs extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
-
+        saveDefaultConfig();
+        getLogger().info(String.format("Gangs Plugin Version %s Enabled", getPluginMeta().getVersion()));
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        getLogger().info(String.format("Gangs Plugin Version %s Disabled", getPluginMeta().getVersion()));
     }
 }

@@ -1,0 +1,33 @@
+database:
+  #sqlite or mysql
+  type: sqlite
+
+  #below options are only for mysql
+  host: localhost
+  port: 3306
+  db-name: gangs
+  user: root
+  password: ""
+
+
+gangs:
+  ranks: [rookie,associate,captain,leader] #left to right hierarchy
+  ranks-with-invite-perms: [captain,leader]
+  ranks-with-rank-perms: [captain,leader]
+  ranks-with-kick-perms: [captain,leader]
+  ranks-with-disband-perms: [leader]
+  ranks-with-ally-perms: [leader]
+  ranks-with-vault-perms: [rookie,associate,captain,leader]
+  ranks-with-friendly-fire-perms: [leader]
+  ranks-with-base-perms: [leader]
+  ranks-with-summon-perms: [leader]
+  ranks-with-challenge-perms: [leader]
+  force-friendly-fire: false
+  force-friendly-fire-disable : false
+  friendly-fire-gang: true
+  force-friendly-fire-disable-allies: false
+  friendly-fire-allies: true
+  base-tp-cooldown: 60 #seconds
+  challenge-cooldown: 60 #seconds
+  invite-cooldown: 60 #seconds
+  ally-request-cooldown : 60 #seconds
