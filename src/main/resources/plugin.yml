@@ -1,0 +1,4 @@
+name: gangs
+version: '1.0-SNAPSHOT'
+main: com.orang3i.gangs.Gangs
+api-version: '1.21'
