@@ -17,6 +17,7 @@ public final class Gangs extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        pluginStatic = this;
         Connector.init(this);
         dao = new DAO();
         registerEvents();
@@ -25,6 +26,7 @@ public final class Gangs extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        Connector.closeConnection();
         getLogger().info(String.format("Gangs Plugin Version %s Disabled", getPluginMeta().getVersion()));
     }
 

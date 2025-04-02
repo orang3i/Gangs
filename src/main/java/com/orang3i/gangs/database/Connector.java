@@ -1,6 +1,7 @@
 package com.orang3i.gangs.database;
 
 import com.orang3i.gangs.Gangs;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,16 +9,13 @@ import java.util.Objects;
 
 public class Connector {
 
-    private static Connector instance;
-    private final Gangs plugin;
+    private static Gangs plugin;
     private static Connection connection;
 
-    public static void init(Gangs plugin) {
-        if (instance == null) instance = new Connector(plugin);
-    }
+    private Connector() {}
 
-    public Connector(Gangs plugin) {
-        this.plugin = plugin;
+    public static void init(Gangs pluginInstance) {
+        plugin = pluginInstance;
         if (Objects.equals(plugin.getConfig().getString("database.type"), "mysql")) {
             mysql();
         } else {
@@ -25,7 +23,7 @@ public class Connector {
         }
     }
 
-    private void mysql() {
+    private static void mysql() {
         if (connection == null) {
             try {
                 String host = plugin.getConfig().getString("database.host");
@@ -42,7 +40,7 @@ public class Connector {
         }
     }
 
-    private void sqlite() {
+    private static void sqlite() {
         if (connection == null) {
             try {
                 connection = DriverManager.getConnection("jdbc:sqlite:" + plugin.getDataFolder() + "/" + "gangs.db");
@@ -54,7 +52,7 @@ public class Connector {
     }
 
     public static Connection getConnection() {
-        return instance.getConnection();
+        return connection;
     }
 
     public static void closeConnection() {
