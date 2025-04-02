@@ -1,6 +1,5 @@
 package com.orang3i.gangs.database;
 
-import java.nio.file.LinkOption;
 import java.sql.SQLException;
 
 public class DAO {
