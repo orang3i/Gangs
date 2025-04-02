@@ -35,6 +35,7 @@ public class AdventureTests implements Listener {
         player.sendMessage(MiniMessageDeserializer.mm(message));
         plugin.getDAO().createTestTable();
         plugin.getDAO().insertData();
+        plugin.getDAO().getData();
     }
 
 }
