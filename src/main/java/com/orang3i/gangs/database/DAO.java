@@ -11,13 +11,13 @@ public class DAO {
     }
 
     public void createTestTable() throws SQLException {
-        String sql = "CREATE TABLE IF NOT EXISTS test (Name INT)";
-        db.execute(sql);
+        String sql = "CREATE TABLE IF NOT EXISTS test (?)";
+        db.execute(sql, stmt -> {stmt.setString(1, "c1 CHAR");});
     }
 
     public void insertData() throws SQLException {
-        String sql = String.format("INSERT INTO test VALUES (%s)","'test'");
-        db.execute(sql);
+        String sql = "INSERT INTO test VALUES (?)";
+        db.execute(sql , stmt -> {stmt.setString(1, "'hello'");});
     }
 
     public void getData() throws SQLException {

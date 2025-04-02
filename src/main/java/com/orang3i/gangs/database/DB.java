@@ -22,6 +22,13 @@ public class DB {
         void accept(ResultSet rs) throws SQLException;
     }
 
+    public void execute(String sql, StatementCallback paramSetter) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            paramSetter.accept(stmt);
+            stmt.executeUpdate();
+        }
+    }
+
     public void execute(String sql) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.executeUpdate();
@@ -32,6 +39,15 @@ public class DB {
         try (PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             resultHandler.accept(rs);
+        }
+    }
+
+    public void query(String sql, StatementCallback paramSetter, QueryCallback resultHandler) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            paramSetter.accept(stmt);
+            try (ResultSet rs = stmt.executeQuery()) {
+                resultHandler.accept(rs);
+            }
         }
     }
 
