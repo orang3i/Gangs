@@ -1,4 +1,4 @@
-package com.orang3i.gangs.adventure;
+package com.orang3i.gangs.formatter;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;

@@ -1,7 +1,7 @@
 package com.orang3i.gangs.test;
 
 import com.orang3i.gangs.Gangs;
-import com.orang3i.gangs.adventure.MiniMessageDeserializer;
+import com.orang3i.gangs.formatter.MiniMessageDeserializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.entity.Player;

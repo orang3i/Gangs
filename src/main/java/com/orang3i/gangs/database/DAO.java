@@ -11,20 +11,22 @@ public class DAO {
     }
 
     public void createTestTable() throws SQLException {
-        String sql = "CREATE TABLE IF NOT EXISTS test (?)";
-        db.execute(sql, stmt -> {stmt.setString(1, "c1 CHAR");});
+        String sql = "CREATE TABLE IF NOT EXISTS test (User CHAR)";
+        db.execute(sql);
     }
 
     public void insertData() throws SQLException {
         String sql = "INSERT INTO test VALUES (?)";
-        db.execute(sql , stmt -> {stmt.setString(1, "'hello'");});
+        db.execute(sql , stmt -> {
+            stmt.setString(1,"orang3i");
+        });
     }
 
     public void getData() throws SQLException {
         String sql = "SELECT * FROM test";
         db.query(sql, resultSet -> {
             if(resultSet.next()) {
-                System.out.println(resultSet.getString("Name"));
+                System.out.println(resultSet.getString("User"));
             }
         });
     }
