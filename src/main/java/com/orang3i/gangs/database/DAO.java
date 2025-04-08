@@ -104,7 +104,7 @@ public class DAO {
                 exists[0] = true;
             }
         });
-        if (!exists[0]) {
+        if (exists[0]) {
             sql = "INSERT INTO PLAYERS VALUES (?,?,?)";
             db.execute(sql, stmt -> {
                 stmt.setString(1, uuid.toString());
@@ -126,7 +126,7 @@ public class DAO {
                 exists[0] = true;
             }
         });
-        if (!exists[0]) {
+        if (exists[0]) {
             sql = "INSERT INTO gangs VALUES (?)";
             db.execute(sql, stmt -> {
                 stmt.setString(1, "NULLGANG");
