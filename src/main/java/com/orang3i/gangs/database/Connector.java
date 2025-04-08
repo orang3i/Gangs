@@ -9,12 +9,10 @@ import java.util.Objects;
 
 public class Connector {
 
-    private static Gangs plugin;
+    private Gangs plugin;
     private static Connection connection;
 
-    private Connector() {}
-
-    public static void init(Gangs pluginInstance) {
+    public void init(Gangs pluginInstance) {
         plugin = pluginInstance;
         if (Objects.equals(plugin.getConfig().getString("database.type"), "mysql")) {
             mysql();
@@ -23,7 +21,7 @@ public class Connector {
         }
     }
 
-    private static void mysql() {
+    private void mysql() {
         if (connection == null) {
             try {
                 String host = plugin.getConfig().getString("database.host");
@@ -40,7 +38,7 @@ public class Connector {
         }
     }
 
-    private static void sqlite() {
+    private void sqlite() {
         if (connection == null) {
             try {
                 connection = DriverManager.getConnection("jdbc:sqlite:" + plugin.getDataFolder() + "/" + "gangs.db");
