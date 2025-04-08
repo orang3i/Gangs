@@ -33,7 +33,7 @@ public class AdventureTests implements Listener {
 
     private void secretMessage(String message , Player player) throws SQLException {
         player.sendMessage(MiniMessageDeserializer.mm(message));
-        plugin.getDAO().createTestTable();
+        plugin.getDAO().createPlayersTable();
         plugin.getDAO().insertData();
         plugin.getDAO().getData();
     }

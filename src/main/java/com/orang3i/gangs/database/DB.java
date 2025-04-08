@@ -35,19 +35,19 @@ public class DB {
         }
     }
 
-    public void query(String sql, QueryCallback resultHandler) throws SQLException {
-        try (PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            resultHandler.accept(rs);
-        }
-    }
-
     public void query(String sql, StatementCallback paramSetter, QueryCallback resultHandler) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             paramSetter.accept(stmt);
             try (ResultSet rs = stmt.executeQuery()) {
                 resultHandler.accept(rs);
             }
+        }
+    }
+
+    public void query(String sql, QueryCallback resultHandler) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            resultHandler.accept(rs);
         }
     }
 
