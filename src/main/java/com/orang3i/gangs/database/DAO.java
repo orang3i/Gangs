@@ -91,4 +91,46 @@ public class DAO {
             }
         });
     }
+
+    public void initPlayer(UUID uuid) throws SQLException {
+        final boolean[] exists = {false};
+        String sql = "SELECT 1 FROM PLAYERS WHERE UUID = ? LIMIT 1";
+        db.query(sql, statement -> {
+            statement.setString(1, uuid.toString());
+        }, resultSet -> {
+            if (resultSet.next()) {
+                exists[0] = false;
+            } else {
+                exists[0] = true;
+            }
+        });
+        if (!exists[0]) {
+            sql = "INSERT INTO PLAYERS VALUES (?,?,?)";
+            db.execute(sql, stmt -> {
+                stmt.setString(1, uuid.toString());
+                stmt.setString(2, "NULLGANG");
+                stmt.setString(3, "NULLRANK");
+            });
+        }
+    }
+
+    public void initGangs() throws SQLException {
+        final boolean[] exists = {false};
+        String sql = "SELECT 1 FROM GANGS WHERE gang_name = ? LIMIT 1";
+        db.query(sql, statement -> {
+            statement.setString(1, "NULLGANG");
+        }, resultSet -> {
+            if (resultSet.next()) {
+                exists[0] = false;
+            } else {
+                exists[0] = true;
+            }
+        });
+        if (!exists[0]) {
+            sql = "INSERT INTO gangs VALUES (?)";
+            db.execute(sql, stmt -> {
+                stmt.setString(1, "NULLGANG");
+            });
+        }
+    }
 }

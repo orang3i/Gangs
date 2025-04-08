@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 
 public class InviteCommand {
-    private LiteralArgumentBuilder<CommandSourceStack> invite = CommandRoot.getGangsCommandRoot().then(Commands.literal("invite")).then(Commands.argument("PlayerName", StringArgumentType.string()).executes(InviteCommand::inviteLogic));
+    public static LiteralArgumentBuilder<CommandSourceStack> invite = Commands.literal("invite").then(Commands.argument("PlayerName", StringArgumentType.string()).executes(InviteCommand::inviteLogic));
 
     private static int inviteLogic(CommandContext<CommandSourceStack> ctx) {
         Player invited = Bukkit.getPlayer(ctx.getArgument("PlayerName", String.class));

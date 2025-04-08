@@ -16,15 +16,15 @@ import java.sql.SQLException;
 
 
 public class CreateCommand {
-    private LiteralArgumentBuilder<CommandSourceStack> create = CommandRoot.getGangsCommandRoot().then(Commands.literal("create")).then(Commands.argument("GangName", StringArgumentType.string()).executes(CreateCommand::createLogic));
-
+    public static LiteralArgumentBuilder<CommandSourceStack> create = Commands.literal("create").then(Commands.argument("GangName", StringArgumentType.string()).executes(CreateCommand::createLogic));
     private static int createLogic(CommandContext<CommandSourceStack> ctx){
         String gangName = ctx.getArgument("GangName", String.class);
         try {
             Boolean success = Gangs.getPluginStatic().getDAO().createGang(gangName);
             Player executor = (Player) ctx.getSource().getExecutor();
             if(success){
-                Gangs.getPluginStatic().getDAO().setPlayerRank(executor.getUniqueId(), gangName);
+                Gangs.getPluginStatic().getDAO().setPlayerGang(executor.getUniqueId(), gangName);
+                Gangs.getPluginStatic().getDAO().setPlayerRank(executor.getUniqueId(), "Leader");
                 Component message = MiniMessageDeserializer.mm("You are now the leader of " + gangName,true);
                 executor.sendMessage(message);
             }

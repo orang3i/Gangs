@@ -3,9 +3,12 @@ package com.orang3i.gangs;
 import com.orang3i.gangs.command.CommandRoot;
 import com.orang3i.gangs.database.Connector;
 import com.orang3i.gangs.database.DAO;
+import com.orang3i.gangs.listener.PlayerJoinListener;
 import com.orang3i.gangs.test.AdventureTests;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.sql.SQLException;
 
 public final class Gangs extends JavaPlugin {
 
@@ -14,6 +17,7 @@ public final class Gangs extends JavaPlugin {
 
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(new AdventureTests(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
     }
 
     @Override
@@ -22,9 +26,17 @@ public final class Gangs extends JavaPlugin {
         pluginStatic = this;
         new Connector().init(this);
         dao = new DAO();
+        try {
+            dao.createPlayersTable();
+            dao.createGangsTable();
+            dao.initGangs();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         registerEvents();
+        CommandRoot.register();
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-            commands.registrar().register(CommandRoot.getGangsCommandRoot().build());});
+            commands.registrar().register(CommandRoot.gangsCommandRoot.build());});
         getLogger().info(String.format("Gangs Plugin Version %s Enabled", getPluginMeta().getVersion()));
     }
 

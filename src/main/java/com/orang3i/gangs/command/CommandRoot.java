@@ -6,13 +6,9 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 
 public class CommandRoot {
-    private static LiteralArgumentBuilder<CommandSourceStack> gangsCommandRoot = Commands.literal("gangs");
-
-    public static LiteralArgumentBuilder<CommandSourceStack> getGangsCommandRoot() {
-        return gangsCommandRoot;
-    }
-
-    public static void setGangsCommandRoot(LiteralArgumentBuilder<CommandSourceStack> gangsCommandRoot) {
-        CommandRoot.gangsCommandRoot = gangsCommandRoot;
+    public static LiteralArgumentBuilder<CommandSourceStack> gangsCommandRoot = Commands.literal("gangs");
+    public static void register() {
+        gangsCommandRoot.then(CreateCommand.create);
+        gangsCommandRoot.then(InviteCommand.invite);
     }
 }
