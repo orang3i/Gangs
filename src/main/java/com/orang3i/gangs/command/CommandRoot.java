@@ -10,5 +10,6 @@ public class CommandRoot {
     public static void register() {
         gangsCommandRoot.then(CreateCommand.create);
         gangsCommandRoot.then(InviteCommand.invite);
+        gangsCommandRoot.then(SetRankCommand.setRank);
     }
 }

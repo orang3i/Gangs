@@ -17,7 +17,7 @@ import java.util.List;
 
 
 public class SetRankCommand {
-    public static LiteralArgumentBuilder<CommandSourceStack> setRank = Commands.literal("set-rank").then(Commands.argument("PlayerName", StringArgumentType.string()).then(Commands.argument("Rank", StringArgumentType.string())).executes(SetRankCommand::setRankLogic));
+    public static LiteralArgumentBuilder<CommandSourceStack> setRank = Commands.literal("set-rank").then(Commands.argument("PlayerName", StringArgumentType.string()).then(Commands.argument("Rank", StringArgumentType.string()).executes(SetRankCommand::setRankLogic)));
 
     private static int setRankLogic(CommandContext<CommandSourceStack> ctx) {
         try {
@@ -34,13 +34,19 @@ public class SetRankCommand {
             if (rankerRanks.contains(executorRank)) {
                 if (executorRankIndex > finalRankIndex && executorRankIndex > subjectRankIndex) {
                     Gangs.getPluginStatic().getDAO().setPlayerRank(subject.getUniqueId(), finalRank);
-                    Component subjectMessage;
+                    Component subjectMessage = MiniMessageDeserializer.mm("Your rank is now" + finalRank, true);
                     if (finalRankIndex > subjectRankIndex) {
-                        subjectMessage = MiniMessageDeserializer.mm("You are now promoted to " + finalRank);
+                        subjectMessage = MiniMessageDeserializer.mm("You are now promoted to " + finalRank, true);
                     } else if (finalRankIndex < subjectRankIndex) {
-                        subjectMessage = MiniMessageDeserializer.mm("You are now promoted to " + finalRank);
+                        subjectMessage = MiniMessageDeserializer.mm("You are now promoted to " + finalRank, true);
                     }
+                    subject.sendMessage(subjectMessage);
+                } else {
+                    Component dissalowMessage = MiniMessageDeserializer.mm("Your rank does not allow you to set ranks higher than " + executorRank + " or to set ranks of members highers than " + executorRank);
+                    executor.sendMessage(dissalowMessage);
                 }
+            } else {
+                executor.sendMessage(MiniMessageDeserializer.mm("Your rank does not allow you set ranks"));
             }
 
         } catch (SQLException e) {
