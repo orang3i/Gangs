@@ -13,22 +13,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.List;
 
 
 public class CreateCommand {
     public static LiteralArgumentBuilder<CommandSourceStack> create = Commands.literal("create").then(Commands.argument("GangName", StringArgumentType.string()).executes(CreateCommand::createLogic));
-    private static int createLogic(CommandContext<CommandSourceStack> ctx){
+
+    private static int createLogic(CommandContext<CommandSourceStack> ctx) {
         String gangName = ctx.getArgument("GangName", String.class);
         try {
             Boolean success = Gangs.getPluginStatic().getDAO().createGang(gangName);
             Player executor = (Player) ctx.getSource().getExecutor();
-            if(success){
+            if (success) {
                 Gangs.getPluginStatic().getDAO().setPlayerGang(executor.getUniqueId(), gangName);
                 Gangs.getPluginStatic().getDAO().setPlayerRank(executor.getUniqueId(), "Leader");
-                Component message = MiniMessageDeserializer.mm("You are now the leader of " + gangName,true);
+                List<String> ranks = Gangs.getPluginStatic().getConfig().getStringList("gangs.ranks");
+                Component message = MiniMessageDeserializer.mm("You are now the " + ranks.getLast() + " of " + gangName, true);
                 executor.sendMessage(message);
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return Command.SINGLE_SUCCESS;

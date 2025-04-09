@@ -14,27 +14,30 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class InviteCommand {
     public static LiteralArgumentBuilder<CommandSourceStack> invite = Commands.literal("invite").then(Commands.argument("PlayerName", StringArgumentType.string()).executes(InviteCommand::inviteLogic));
 
     private static int inviteLogic(CommandContext<CommandSourceStack> ctx) {
-        Player invited = Bukkit.getPlayer(ctx.getArgument("PlayerName", String.class));
-        Player inviter = (Player) ctx.getSource().getExecutor();
         try {
-            Component invite = MiniMessageDeserializer.mm("You are invited by " + invited.getName() + " to become a member of " + Gangs.getPluginStatic().getDAO().getPlayerGang(inviter.getUniqueId()));
+            Player subject = Bukkit.getPlayer(ctx.getArgument("PlayerName", String.class));
+            Player executor = (Player) ctx.getSource().getExecutor();
+            Component invite = MiniMessageDeserializer.mm("You are invited by " + subject.getName() + " to become a member of " + Gangs.getPluginStatic().getDAO().getPlayerGang(executor.getUniqueId()));
             Component accept = MiniMessageDeserializer.mm("[ACCEPT]", true).clickEvent(ClickEvent.callback(audience -> {
                 try {
-                    Gangs.getPluginStatic().getDAO().setPlayerGang(invited.getUniqueId(), Gangs.getPluginStatic().getDAO().getPlayerGang(inviter.getUniqueId()));
-                    Gangs.getPluginStatic().getDAO().setPlayerRank(invited.getUniqueId(), "rookie");
-                    invited.sendMessage(MiniMessageDeserializer.mm("You are now a rookie at "+ Gangs.getPluginStatic().getDAO().getPlayerGang(invited.getUniqueId()),true));
-                    inviter.sendMessage(MiniMessageDeserializer.mm(invited.getName()+" has accepted the invite to become a member of your gang!"));
+                    String gang = Gangs.getPluginStatic().getDAO().getPlayerGang(executor.getUniqueId());
+                    List<String> ranks = Gangs.getPluginStatic().getConfig().getStringList("gangs.ranks");
+                    Gangs.getPluginStatic().getDAO().setPlayerGang(subject.getUniqueId(), gang);
+                    Gangs.getPluginStatic().getDAO().setPlayerRank(subject.getUniqueId(), ranks.getFirst());
+                    subject.sendMessage(MiniMessageDeserializer.mm("You are now a " + ranks.getFirst() + " at " + gang, true));
+                    executor.sendMessage(MiniMessageDeserializer.mm(subject.getName() + " has accepted your invite and is now a " + ranks.getFirst() + " at " + gang, true));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             }));
-            invited.sendMessage(invite);
-            invited.sendMessage(accept);
+            subject.sendMessage(invite);
+            subject.sendMessage(accept);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

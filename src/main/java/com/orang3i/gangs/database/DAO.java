@@ -76,6 +76,19 @@ public class DAO {
         return result[0];
     }
 
+    public String getPlayerRank(UUID uuid) throws SQLException {
+        final String[] result = new String[1];
+        String sql = "SELECT RANK FROM PLAYERS WHERE UUID = ?";
+        db.query(sql, stmt -> {
+            stmt.setString(1, uuid.toString());
+        }, resultSet -> {
+            if (resultSet.next()) {
+                result[0] = resultSet.getString(1);
+            }
+        });
+        return result[0];
+    }
+
     public void insertData() throws SQLException {
         String sql = "INSERT INTO test VALUES (?)";
         db.execute(sql, stmt -> {
